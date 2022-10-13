@@ -75,4 +75,6 @@ split_line_thin = '\n' + f"{'---------------':<65}"
 
 starting_line = '\n' + f"{'Starting mapper...':^65}"
 
-hgvs_pattern = "chr\d\:g.\d+\w"
+chr_hgvs_pattern = "chr\w+\:g.\d+.+"
+
+clean_pattern = "NC_\d+\.\d+\:g.\d+.+"

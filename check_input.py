@@ -71,3 +71,27 @@ def count_vcf_files(filenames_array):
         if '.vcf' in file:
             num_vcf_files += 1
     return num_vcf_files
+
+
+def count_txt_files(filenames_array):
+    num_txt_files = 0
+    for file in filenames_array:
+        if '.txt' in file:
+            num_txt_files += 1
+    return num_txt_files
+
+
+def count_csv_files(filenames_array):
+    num_csv_files = 0
+    for file in filenames_array:
+        if '.csv' in file:
+            num_csv_files += 1
+    return num_csv_files
+
+
+def count_xml_files(filenames_array):
+    num_xml_files = 0
+    for file in filenames_array:
+        if '.xml' in file:
+            num_xml_files += 1
+    return num_xml_files

@@ -10,7 +10,6 @@ import pandas as pd
 import random
 import shutil
 import sys
-import gzip
 import time
 from flask import Flask, render_template, request, send_file
 from werkzeug.utils import secure_filename
@@ -43,7 +42,7 @@ app.config['MAX_CONTENT_PATH'] = 10000000
 app.secret_key = SECRET_KEY = os.urandom(28)
 
 # configuring the allowed extensions
-allowed_extensions = ['vcf', 'csv', 'txt']
+allowed_extensions = ['vcf', 'csv', 'txt', 'xml']
 
 
 def check_file_extension(filename):
@@ -53,19 +52,16 @@ def check_file_extension(filename):
 # The path for uploading the file
 @app.route('/')
 def upload_file():
-    return render_template('index.html', show_download=False, show_upload=True, show_loading=False)
-
+    return render_template('index.html')
 
 
 @app.route('/upload', methods=['GET', 'POST'])
 def uploadfile():
     print("request received......")
-
     if request.method == 'POST':  # check if the method is post
         # request.form['file']
         files = request.files.getlist('files')  # get the file from the files object
         print(files)
-
         for f in files:
             print(f.filename)
             # Saving the file in the required destination
@@ -73,20 +69,13 @@ def uploadfile():
                 f.save(
                     os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))  # this will secure the file
             else:
-                return render_template('index.html', show_download=False, show_upload=False, show_loading=False, show_error=True)
-                #sys.exit('Unsupported file extension')
+                sys.exit('Unsupported file extension')
 
-            output = process_file(upload_folder)
+        process_vcf(upload_folder)
 
-            if output != 0:
-                return render_template('index.html', show_download=True, show_upload=False, show_loading=False, show_error=False)  # Display this message after uploading
-            else:
-                return render_template('index.html', show_download=False, show_upload=False, show_loading=False, show_error=True)
-
+        return render_template('index.html')  # Display thsi message after uploading
     else:
-        return render_template('index.html', show_download=False, show_upload=True, show_loading=False,  show_error=False)
-
-
+        return render_template('index.html')
 
 
 def write_output(filename, data):
@@ -94,8 +83,8 @@ def write_output(filename, data):
         f.write(data)
 
 
-def process_file(upload_folder_path):
-    main.main(upload_folder_path, constants.opts_options_array, website_mode=True)
+def process_vcf(upload_folder_path):
+    main.main(upload_folder_path, constants.opts_options_array)
 
 
 def get_vcf_names(vcf_path):
@@ -122,10 +111,10 @@ def save_base64(base64_str):
     decoded_bytes = base64.b64decode(bytes(base64_str, "utf-8"))
     return np.frombuffer(decoded_bytes, dtype=np.uint8)
 
-#Unknown...
-#@app.route("/", methods=["GET"])
-#def get_results():
-#    return render_template('index.html', content="")
+
+@app.route("/", methods=["GET"])
+def get_results():
+    return render_template('index.html', content="")
 
 
 @app.route('/downloadhgvs')
