@@ -223,12 +223,11 @@
                                 enctype="multipart/form-data">
                                 <br/><br/><br/><br/>
                                 <i class="fa fa-2x fa-file"></i>
-                                <label for="files" class="file-upload-label t-text"><strong>Choose files: </strong></label>
-                                
+                                <label for="files" id="choosefilelbl" class="file-upload-label t-text"><strong>Choose files: </strong></label>
+                                <label for="files" id="loadinglbl" class="t-text" style="display: none"><strong>Loading...</strong></label>
                                 <br/><br/><br/><br/>
                                 <input type="file" name="files" id="inputTag" onchange="encodeImageFileAsURL(this)" class='visuallyhidden' multiple="true" />
-                                
-
+                                                                                           
                                 <span id="imageName" class="t-text"></span>
                                 <!--<label for="files"><strong>Choose a file</strong></label>-->
 
@@ -327,6 +326,17 @@
                         text-align:center;
                       }
                     </style>
+                    <script>
+                       function showSubmit(e) {
+                         //console.log("function showSubmit 1");
+                         $('#inputTag').hide();
+                         $('#submitbtn').hide();
+                         $('#choosefilelbl').hide();
+                         $('#submitcheckbox').hide();
+                         $('#loadinglbl').show();
+                         //console.log("function showSubmit 2");
+                       }
+                    </script>
                   </div>
                   </div>
                 </div>
