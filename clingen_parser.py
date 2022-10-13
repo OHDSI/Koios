@@ -9,8 +9,8 @@ from constants import output_dir_path, temp_folder, hgvsg_folder_path, input_dir
 
 
 def parse_clingen(hgvsg_df, current_filename, vcf_mode=False):
-    all_names = hgvsg_df['HGVSg']
-    file_length = len(all_names)
+
+    file_length = len(hgvsg_df['HGVSg'])
 
     http = urllib3.PoolManager()
     url = 'http://reg.test.genome.network/allele?hgvs='
@@ -37,12 +37,19 @@ def parse_clingen(hgvsg_df, current_filename, vcf_mode=False):
         print('\nOpened file: ', current_filename, '\twith ', file_length, ' hgvs')
 
         ii = 1
-        for seq in all_names:
 
-            if vcf_mode:
-                writer.writerow({'filename': current_filename, 'hgvsg': seq, 'timestamp': time.ctime()})
-            else:
-                writer.writerow({'source_concept_id': current_filename, 'hgvsg': seq, 'timestamp': time.ctime()})
+        for i in range(file_length):
+            seq = hgvsg_df['HGVSg'][i]
+
+
+            try:
+                seq2 = hgvsg_df['HGVSg37'][i]
+                url_2 = hgvsg_df['url37'][i]
+                mode_37_38 = True
+            except:
+                mode_37_38 = False
+
+
             # convert symbol > to special code %3E
             url_1 = url + requests.utils.quote(seq)
 
@@ -51,10 +58,48 @@ def parse_clingen(hgvsg_df, current_filename, vcf_mode=False):
             res = http.request('GET', url_1)
             data = json.loads(res.data)
 
+            if mode_37_38:
+                res37 = http.request('GET', url_2)
+                data37 = json.loads(res37.data)
+
+                try:
+                    communityStandardTitle = data.get('communityStandardTitle')
+                except:
+                    pass
+                try:
+                    communityStandardTitle37 = data37.get('communityStandardTitle')
+                except:
+                    pass
+
+                try:
+                    if len(communityStandardTitle) > 0:
+                        data = data
+                        seq = seq
+                except:
+                    pass
+                try:
+                    if len(communityStandardTitle37) > 0:
+                        data = data37
+                        seq = seq2
+                except:
+                    pass
+
+                try:
+                    if len(communityStandardTitle37) > 0 and len(communityStandardTitle) > 0:
+                        continue
+                except:
+                    pass
+
             try:
                 communityStandardTitle = data.get('communityStandardTitle')
                 if communityStandardTitle != None:
                     communityStandardTitle = communityStandardTitle[0]
+                if vcf_mode:
+                    writer.writerow({'filename': current_filename, 'hgvsg': seq, 'timestamp': time.ctime()})
+                else:
+                    writer.writerow({'source_concept_id': current_filename, 'hgvsg': seq, 'timestamp': time.ctime()})
+
+
 
                 t = data.get('type')
 

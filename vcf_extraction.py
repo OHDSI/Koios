@@ -6,6 +6,7 @@ import constants
 import requests
 import xmltodict
 import re
+import csv
 from constants import assembly_dir, temp_folder, hgvsg_folder_path, input_dir, project_dir
 
 
@@ -243,6 +244,109 @@ def pipeline(filename_vcf_gz):
 
     print('\nHGVSg are extracted and temporarily saved at /hgvsg/')
     return final_vcf
+
+
+def pipeline_txt(filename, hgvs_list, mode='clean'):
+
+    build_file = create_build_file(assembly_dir + 'GCF_000001405.26_GRCh38_assembly_report.txt')
+    build_file2 = create_build_file(assembly_dir + 'GCF_000001405.13_GRCh37_assembly_report.txt')
+
+    url = 'http://reg.test.genome.network/allele?hgvs='
+
+    if mode == 'clean':
+        final_hgvs = pd.DataFrame()
+        final_hgvs['HGVSg'] = hgvs_list
+        final_hgvs['url'] = url + final_hgvs['HGVSg'].astype(str)
+        final_hgvs.to_csv(hgvsg_folder_path + 'outputHGVSg.csv', index=False, sep='\t')
+        return final_hgvs
+
+    if mode == 'chr':
+        hgvs_file_name = hgvsg_folder_path + 'outputHGVSg.csv'
+        with open(hgvs_file_name, 'w', encoding='utf-8') as csvfile:
+
+            fieldnames = ['HGVSg', 'HGVSg37', 'url', 'url37']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=',')
+            writer.writeheader()
+
+            num_hgvs = len(hgvs_list)
+            for i in range(num_hgvs):
+                hgvs = hgvs_list[i]
+
+                chr_num = re.findall(r'chr(\w)', hgvs)[0]
+
+                rel_code_38 = build_file[build_file['Sequence-Role']==chr_num].reset_index()['Relationship'][0]
+
+                rel_code_37 = build_file2[build_file2['Sequence-Role']==chr_num].reset_index()['Relationship'][0]
+
+                right_part = re.findall(r'chr\w(.+)',hgvs)[0]
+                hgvs_38 = rel_code_38 + right_part
+                hgvs_37 = rel_code_37 + right_part
+                url1 = url + hgvs_38
+                url2 = url + hgvs_37
+
+                writer.writerow({'HGVSg': hgvs_38, 'HGVSg37': hgvs_37, 'url': url1,'url37': url2})
+
+        return pd.read_csv(hgvs_file_name)
+
+def check_chr_pattern(df):
+    pattern = constants.chr_hgvs_pattern
+
+    for col in df.columns:
+        current_col = df[col]
+
+        count_matches = 0
+
+        for i in range(len(df)):
+            test_string = current_col[i]
+
+            #print(test_string)
+
+            if re.search(pattern, test_string):
+                count_matches+=1
+
+        if count_matches >= 0.8*len(df):
+            chr_hgvs_col = col
+
+
+            break
+
+    try:
+        df['HGVSg'] = df[chr_hgvs_col]
+        hgvs_list = df['HGVSg']
+
+        return hgvs_list
+
+    except:
+        return []
+
+def check_hgvs_pattern(df):
+    pattern = constants.clean_pattern
+
+    for col in df.columns:
+        current_col = df[col]
+
+        count_matches = 0
+
+        for i in range(len(df)):
+            test_string = current_col[i]
+            print('test string: ', test_string)
+            #print(test_string)
+
+            if re.search(pattern, test_string):
+                count_matches+=1
+        if count_matches >= 0.8*len(df):
+            hgvs_col = col
+            print('clean_hgvs_col ', col )
+
+            break
+
+    try:
+        df['HGVSg'] = df[hgvs_col]
+        hgvs_list = df['HGVSg']
+
+        return hgvs_list
+    except:
+        return []
 
 
 def pipeline_vocab(hgvs_list):

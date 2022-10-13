@@ -19,7 +19,7 @@
   <meta http-equiv="x-dns-prefetch-control" content="on">
   <link rel="dns-prefetch" href="https://ws.tildacdn.com">
  
-  <link rel="shortcut icon" href="{{ url_for('static',filename='imgs/t-ohdsi-logo-only.ico') }}" type="image/x-icon"><!-- Assets -->
+  <link rel="shortcut icon" href="{{ url_for('static',filename='imgs/koios-logo.ico') }}" type="image/x-icon"><!-- Assets -->
   <link rel="stylesheet" href="css/tilda-grid-3.0.min.css" type="text/css" media="all" onerror="this.loaderr='y';">
   <link rel="stylesheet" href="css/tilda-blocks-page29078480.min.css?t=1658140603" type="text/css" media="all" onerror="this.loaderr='y';">
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -86,7 +86,7 @@
 </head>
 <body class="t-body" style="margin:0;">
   <!--allrecords-->
-  <div><img src="{{ url_for('static',filename='imgs/ohdsi_color.png') }}" style="align-text"=left; height="45px" imgfield="img" position=absolute margin=0 auto; top=10px;></div>
+  <div><a href="https://ohdsi.org"><img src="{{ url_for('static',filename='imgs/ohdsi_color.png') }}" style="align-text"=left; height="45px" imgfield="img" position=absolute margin=0 auto; top=10px;></a></div>
   <div id="allrecords" data-tilda-export="yes" class="t-records" data-hook="blocks-collection-content-node" data-tilda-project-id="5843205" data-tilda-page-id="29078480" data-tilda-formskey="f49bad0d8c351b92dafcf2b5f5843205" data-tilda-lazy="yes">
     <div id="rec470150921" class="r t-rec t-rec_pt_120 t-rec_pb_120" style="padding-top:120px;padding-bottom:120px;background-image: url('https://odysseusinc.com/wp-content/themes/odysseus/img/fon_2.jpg');background-attachment:fixed;background-size: cover;background-color:#abffca;" data-record-type="255" data-bg-color="#abffca">
       <!-- T225 -->
@@ -107,8 +107,8 @@
             <div class="t442__btn-img-wrapper"><img src="{{ url_for('static',filename='imgs/3.png') }}" style="height: 70px" imgfield="img" alt="tild3632-6432-4034-a665-666633343761__ic_info_outline_black"></div>
             <br>
             <br>
-            <div class="t225__title t-title t-title_md" field="title" style="text-transform:uppercase;color:#FFFFFF;">
-              KOIOS
+            <div class="t225__title t-title t-title_name" field="title" style="text-transform:uppercase;color:#FFFFFF;">
+              <a href="https://koios.ohdsi.org" style="color:#FFFFFF">KOIOS</a>
             </div>
 
             <br>
@@ -127,7 +127,7 @@
           <div class="t-col t-col_10 t-prefix_1">
             <div class="t442__wrapone">
               <div class="t442__wraptwo">
-                <a class="t442__link" src="{{ url_for('static',filename='templates/about.html') }}" target="_blank" style="color:#000000;">
+                <a class="t442__link" href="https://koios.ohdsi.org/about" style="color:#000000;">
                 <div class="t442__link-wrapper t442__link-wrapper-hover">
                   
                   <div class="t442__btn-img-wrapper-2"><img src="{{ url_for('static',filename='imgs/tild3632-6432-4034-a665-666633343761__ic_info_outline_black.svg') }}" imgfield="img" style="" class="t442__btn-img t442__btn-img_md" alt="tild3632-6432-4034-a665-666633343761__ic_info_outline_black"></div>
@@ -150,6 +150,39 @@
     </div>
     <!---<div><img src="{{ url_for('static',filename='imgs/steps.svg') }}" imgfield="img2" style="width: 100%"></div>-->
 
+{% if show_loading%}
+<img src="https://i.gifer.com/7YQv.gif" id="spinner" class="hide">
+{% endif %}
+
+{% if show_error%}  
+      <div class="t678">
+        <div class="t-container">
+                <div class="t-form__inputsbox">
+                  
+                  <div class="t-input-group t-input-group_tx" data-input-lid="1502974026489">
+                    <div class="t-input-block">
+                      <div class="t-text" field="li_text__1502974026489">
+                        <div style="font-size: 28px; text-align: center;" data-customstyle="yes">
+                          Please check your input file. 
+                        <button id="myButton" class="nadenka" >Home page</button>
+
+                        <script type="text/javascript">
+                            document.getElementById("myButton").onclick = function () {
+                                location.href = "https://koios.ohdsi.org";
+                            };
+                        </script>
+
+                        </div>
+                      </div>
+                      <div class="t-input-error"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+{% endif %}
+
+
+{% if show_upload%}  
 
 <div id="rec470150922" class="r t-rec t-rec_pt_120 t-rec_pb_105" style="padding-top:120px;padding-bottom:105px;" data-animationappear="off" data-record-type="678">
       <!-- t678 -->
@@ -174,7 +207,7 @@
                     <div class="t-input-block">
                       <div class="t-text" field="li_text__1658140105609">
                         <div style="font-size: 20px; text-align: center;" data-customstyle="yes">
-                          Supported file formats: .vcf, .txt
+                          Supported file formats: .vcf, .txt, .csv
                         </div>
                       </div>
                       <div class="t-input-error"></div>
@@ -188,15 +221,15 @@
                                 action="http://localhost:5000/upload"
                                 method="POST"
                                 enctype="multipart/form-data">
-                                <br><br><br><br>
+                                <br/><br/><br/><br/>
                                 <i class="fa fa-2x fa-file"></i>
-                                <label for="files"><strong>Choose files: </strong></label>
+                                <label for="files" class="file-upload-label t-text"><strong>Choose files: </strong></label>
                                 
-                                <br><br><br><br>
-                                <input type="file" name="files" id="file" id="inputTag" style="display: inline;" onchange="encodeImageFileAsURL(this)" class='fileupload' multiple="true" />
+                                <br/><br/><br/><br/>
+                                <input type="file" name="files" id="inputTag" onchange="encodeImageFileAsURL(this)" class='visuallyhidden' multiple="true" />
                                 
 
-                                <span id="imageName"></span>
+                                <span id="imageName" class="t-text"></span>
                                 <!--<label for="files"><strong>Choose a file</strong></label>-->
 
                                 
@@ -214,7 +247,17 @@
                         border: thin solid black; 
                       }
                       
-                      
+                      .visuallyhidden {
+                          border: 0;
+                          clip: rect(0 0 0 0);
+                          height: 1px;
+                          margin: -1px;
+                          overflow: hidden;
+                          padding: 0;
+                          position: absolute;
+                          width: 1px;
+                      }
+
                       input:hover + label,
                       input:focus + label {
                         transform: scale(1.02);
@@ -234,6 +277,11 @@
                       }
                     </style>
                     <script>
+                        $('.file-upload-label').on('click', function(e) {
+                            e.preventDefault();
+                            $('#inputTag').trigger('click');
+                        });
+
                         let input = document.getElementById("inputTag");
                         let imageName = document.getElementById("imageName")
 
@@ -253,7 +301,7 @@
 
 
                     <div class="button-submit" data-input-lid="1658140105609">
-                    <button class="nadenka" type="submit" form="upload_form" value="Submit" onclick="showSubmit(this)";>Submit</button>
+                    <button class="nadenka" id='form_submitted' type="submit" form="upload_form" value="Submit";>Submit</button>
 
                     <style>
                       .button-submit{
@@ -295,13 +343,20 @@
               #rec470150922 textarea:-ms-input-placeholder {color:#000000; opacity: 0.5;}
               </style>
             </div>
+
+            
           
         </div>
 
     </div>
   </div>
 
+{% endif %}
+
+
+
 {% if content != "" %}
+  {% if show_download %}  
 
     <div id="submitclicked" class="submitClass"   style="padding-top:45px;padding-bottom:45px;background-color:#abffca;background-image: url('https://odysseusinc.com/wp-content/themes/odysseus/img/fon_8.jpg');background-attachment:fixed;background-size: cover;" data-record-type="430" data-bg-color="#abffca">
       <!-- T430 -->
@@ -327,6 +382,7 @@
         <div class="t-container">
           <div class="t-col t-col_8 t-prefix_2">
             <div class="t430__wrapone">
+
               <div class="t430__wraptwo">
                 <a class="t430__link" href="/download" target="_blank">
                 <div class="t-btn t-btn_md" style="color:#ffffff;background-color:#000000;">
@@ -345,30 +401,30 @@
         </div> 
       </div>
     </div>
-
+  {% endif %}
 {% endif %}
 
   </div><!--/allrecords--><!-- Tilda copyright. Don't remove this line -->
   <div class="t-tildalabel" id="tildacopy" data-tilda-sign="5843205#29078480">
-    <a href="https://odysseusinc.com/" class="t-tildalabel__link">
-    <div class="t-tildalabel__wrapper">
-      <div class="t-tildalabel__txtright">
-        Made by
-      </div>
-      
-      <div class="t-tildalabel__wrapimg"><img src="https://odysseusinc.com/wp-content/themes/odysseus/img/logo_1.png" class="t-tildalabel__img" fetchpriority="low" alt="tildacopy"></div>
-      <div class="t-tildalabel__txtright">
-        Odysseus Inc
-      </div>
-    </div></a>
-  </div><!-- Stat -->
+  <a href="https://odysseusinc.com/" class="t-tildalabel__link">
+  <div class="t-tildalabel__wrapper">
+    <div class="t-tildalabel__txtright">
+      Made by
+    </div>
+    
+    <div class="t-tildalabel__wrapimg"><img src="https://odysseusinc.com/wp-content/themes/odysseus/img/logo_1.png" class="t-tildalabel__img" fetchpriority="low" alt="tildacopy"></div>
+    <div class="t-tildalabel__txtright">
+      Odysseus Inc
+    </div>
+  </div></a>
+</div><!-- Stat -->
   <script type="text/javascript">
   // if (! window.mainTracker) { window.mainTracker = 'tilda'; }
   // setTimeout(function(){ (function (d, w, k, o, g) { var n=d.getElementsByTagName(o)[0],s=d.createElement(o),f=function(){n.parentNode.insertBefore(s,n);}; s.type = "text/javascript"; s.async = true; s.key = k; s.id = "tildastatscript"; s.src=g; if (w.opera=="[object Opera]") {d.addEventListener("DOMContentLoaded", f, false);} else { f(); } })(document, window, '0bfbb09e81311ab3920725b7363c2c5b','script','js/tilda-stat-1.0.min.js');
   // }, 2000);
   </script>
 
-     <script>
+  <script>
 
 
 
@@ -386,5 +442,31 @@
     reader.readAsDataURL(file);
   }
    </script>
+
+
+  <script>
+  const form = document.getElementById('form_submitted');
+  const spinner = document.getElementById('spinner');
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  form.classList.toggle('fade-out');
+  spinner.classList.toggle('show');
+});
+  </script>
+
+
+
+<style>
+.show{
+  display: block;
+}
+
+.fade-out{
+  opacity: 0;
+}
+</style>
+
+
 </body>
 </html>
