@@ -223,12 +223,11 @@
                                 enctype="multipart/form-data">
                                 <br/><br/><br/><br/>
                                 <i class="fa fa-2x fa-file"></i>
-                                <label for="files" class="file-upload-label t-text"><strong>Choose files: </strong></label>
-                                
+                                <label for="files" id="choosefilelbl" class="file-upload-label t-text"><strong>Choose files: </strong></label>
+                                <label for="files" id="loadinglbl" class="t-text" style="display: none"><strong>Loading...</strong></label>
                                 <br/><br/><br/><br/>
                                 <input type="file" name="files" id="inputTag" onchange="encodeImageFileAsURL(this)" class='visuallyhidden' multiple="true" />
-                                
-
+                                                                                           
                                 <span id="imageName" class="t-text"></span>
                                 <!--<label for="files"><strong>Choose a file</strong></label>-->
 
@@ -295,13 +294,13 @@
                     <br>
                     
 
-                    <div class="t-input-group t-input-group_cb" data-input-lid="1500385262521">
+                    <div class="t-input-group t-input-group_cb" data-input-lid="1500385262521" id="submitcheckbox">
                       <div class="t-input-block"> <label class="t-checkbox__control t-text t-text_xs" style=""><input type="checkbox" name="Checkbox" value="yes" class="t-checkbox js-tilda-rule" data-tilda-req="1"><div class="t-checkbox__indicator"></div>I agree to the Privacy Policy</label> <div class="t-input-error"></div> </div>
                     </div>
 
 
                     <div class="button-submit" data-input-lid="1658140105609">
-                    <button class="nadenka" id='form_submitted' type="submit" form="upload_form" value="Submit";>Submit</button>
+                    <button class="nadenka" type="submit" form="upload_form" id="submitbtn" value="Submit" onclick="showSubmit(this)">Submit</button>
 
                     <style>
                       .button-submit{
@@ -327,6 +326,17 @@
                         text-align:center;
                       }
                     </style>
+                    <script>
+                       function showSubmit(e) {
+                         //console.log("function showSubmit 1");
+                         $('#inputTag').hide();
+                         $('#submitbtn').hide();
+                         $('#choosefilelbl').hide();
+                         $('#submitcheckbox').hide();
+                         $('#loadinglbl').show();
+                         //console.log("function showSubmit 2");
+                       }
+                    </script>
                   </div>
                   </div>
                 </div>
