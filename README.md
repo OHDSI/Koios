@@ -4,13 +4,12 @@ Tool to identify concept in the OMOP Genomic vocabulary from VCF and other files
 
 
 =================================================================
-    Welcome to KOIOS -> Odysseus Genomic Mapper 1.0
+	Welcome to KOIOS -> Odysseus Genomic Mapper 1.0
 
 KOIOS is a tool developed by Odysseus Data Services Inc that allows 
 you to map VCF files with human genomics data or TXT/CSV files with 
 HGVS to OMOP Genomic vocabulary
 
-=================================================================
 -----------------------------------------------------------------
                     MANUAL - Installation
 -----------------------------------------------------------------
