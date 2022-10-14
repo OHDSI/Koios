@@ -118,6 +118,7 @@ def main(input_directory,
                 time.sleep(2)
                 parsed_data = parse_clingen(current_vcf_converted, current_filename, vcf_mode=True)
                 time.sleep(2)
+
                 matches = map_to_omop(parsed_data, current_filename, vcf_mode=True)
                 counter += 1
 
