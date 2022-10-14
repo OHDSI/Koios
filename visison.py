@@ -56,6 +56,11 @@ def upload_file():
     return render_template('index.html', show_download=False, show_upload=True, show_loading=False)
 
 
+# The path to about file
+@app.route('/about')
+def show_about():
+    return render_template('about.html')
+
 
 @app.route('/upload', methods=['GET', 'POST'])
 def uploadfile():
