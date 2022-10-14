@@ -175,6 +175,7 @@ Step 3: OMOP Mapping
 
 		- /omopvsf/output
 
+
 <h3> 
 
 DEFAULT CONVERTER STEPS: File with HGVS
@@ -186,10 +187,16 @@ Next steps are executed in the HGVS mode.
 <p>
 
 
-<img src="static/imgs/steps-hgvs.png" width="" alt="alt_text" title="image_tooltip>
+<img src="static/imgs/hgvs-steps.png" width="" alt="alt_text" title="image_tooltip">
 
 </p>
 
+
+<h3> 
+
+Step 1: VCF Processing
+
+</h3> 
 
 For this mode, you need to already have a file that contains a column with HGVS in one of these formats:
 
