@@ -118,7 +118,6 @@ def main(input_directory,
                 time.sleep(2)
                 parsed_data = parse_clingen(current_vcf_converted, current_filename, vcf_mode=True)
                 time.sleep(2)
-
                 matches = map_to_omop(parsed_data, current_filename, vcf_mode=True)
                 counter += 1
 
@@ -208,11 +207,11 @@ def main(input_directory,
                             return 0
 
 
-            if counter == num_files:
-                move_old_files.move_old_input_files(input_dir_path, constants.input_old_path)
-                #shutil.rmtree(constants.hgvsg_folder_path)
-                #shutil.rmtree(constants.temp_folder_path)
-                print(constants.bottom)
+            #if counter == num_files:
+            move_old_files.move_old_input_files(input_dir_path, constants.input_old_path)
+            #shutil.rmtree(constants.hgvsg_folder_path)
+            #shutil.rmtree(constants.temp_folder_path)
+            print(constants.bottom)
 
 
 if __name__ == '__main__':

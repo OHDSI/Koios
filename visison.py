@@ -14,9 +14,15 @@ import gzip
 import time
 from flask import Flask, render_template, request, send_file
 from werkzeug.utils import secure_filename
-
+import shutil
 import constants
 import main
+
+shutil.rmtree(constants.hgvsg_folder_path)
+shutil.rmtree(constants.temp_folder_path)
+shutil.rmtree(constants.input_dir_path)
+shutil.rmtree(constants.output_dir_path)
+
 
 upload_folder = 'input/'
 temp_folder = 'temp/'
@@ -29,7 +35,6 @@ if not os.path.exists(temp_folder):
     os.mkdir(temp_folder)
 if not os.path.exists(output_folder):
     os.mkdir(output_folder)
-
 if not os.path.exists(hgvs_folder):
     os.mkdir(hgvs_folder)
 
@@ -136,7 +141,6 @@ def save_base64(base64_str):
 @app.route('/downloadhgvs')
 def downloadFileHGVSg():
     # For windows you need to use drive name [ex: F:/Example.pdf]
-
     path = hgvs_folder + "outputHGVSg.csv"
     return send_file(path, as_attachment=True)
 
@@ -151,7 +155,6 @@ def downloadFileClingen():
 
 @app.route('/download')
 def downloadFile():
-    # For windows you need to use drive name [ex: F:/Example.pdf]
 
     path = output_folder + "outputOMOP.csv"
     return send_file(path, as_attachment=True)
