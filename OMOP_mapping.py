@@ -13,7 +13,7 @@ def map_to_omop(parsed_df,current_filename, vcf_mode = False):
                                           right_on='concept_synonym_name')
     #matched_to_synonyms.to_csv(constants.output_dir_path + current_filename + '_OMOP' + '.csv', index=False)
     matched_to_synonyms['target_concept_id'] = matched_to_synonyms['concept_id']
-    matched_to_synonyms = matched_to_synonyms.astype({"target_concept_id": int}, errors='ignore')
+    matched_to_synonyms_inner['target_concept_id'] = matched_to_synonyms_inner['concept_id']
     matched_to_synonyms = matched_to_synonyms.astype({"target_concept_id": int}, errors='ignore')
 
     if vcf_mode:
@@ -28,6 +28,6 @@ def map_to_omop(parsed_df,current_filename, vcf_mode = False):
     print('The # of matches found: ', num_matches)
 
     if num_matches != 0:
-        print(matched_to_synonyms_inner[[1, 'hgvsg', 'target_concept_id']])
+        print(matched_to_synonyms_inner[['hgvsg', 'target_concept_id']])
 
     return matched_to_synonyms

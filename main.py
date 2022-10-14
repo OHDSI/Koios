@@ -164,29 +164,29 @@ def main(input_directory,
 
                         current_hgvs_generated = pipeline_txt(current_filename, clean_hgvs_list, 'clean')
                         time.sleep(2)
-                        parsed_data = parse_clingen(current_hgvs_generated, current_filename, vcf_mode=True)
+                        parsed_data = parse_clingen(current_hgvs_generated, current_filename, vcf_mode=True, mult_build_mode=False)
                         time.sleep(2)
                         map_to_omop(parsed_data,current_filename, vcf_mode=True)
-                        counter += 1
+
                     else:
-                        print('l')
                         chr_hgvs_list = check_chr_pattern(df)
                         try:
                             if len(chr_hgvs_list)!=0:
 
                                 current_hgvs_generated = pipeline_txt(current_filename, chr_hgvs_list, 'chr')
                                 time.sleep(2)
-                                parsed_data = parse_clingen(current_hgvs_generated, current_filename, vcf_mode=True)
+                                parsed_data = parse_clingen(current_hgvs_generated, current_filename, vcf_mode=True, mult_build_mode=True)
                                 time.sleep(2)
                                 map_to_omop(parsed_data,current_filename, vcf_mode=True)
-                                counter += 1
+
                         except:
                             if not website_mode:
+
                                 sys.exit('The input file ' + current_filename + 'doesn\'t contain columns with HGVS. \n'
                                                                                 'Please try again\n' + constants.bottom)
                             else:
                                 return 0
-
+                    counter += 1
 
                 except:
                     chr_hgvs_list = check_chr_pattern(df)
@@ -194,13 +194,14 @@ def main(input_directory,
                         if len(chr_hgvs_list)!=0:
                             current_hgvs_generated = pipeline_txt(current_filename, chr_hgvs_list, 'chr')
                             time.sleep(2)
-                            parsed_data = parse_clingen(current_hgvs_generated, current_filename, vcf_mode=True)
+                            parsed_data = parse_clingen(current_hgvs_generated, current_filename, vcf_mode=True, mult_build_mode=True)
                             time.sleep(2)
                             map_to_omop(parsed_data,current_filename, vcf_mode=True)
                             counter += 1
 
                     except:
                         if not website_mode:
+                            counter += 1
                             sys.exit('The input file ' + current_filename + 'doesn\'t contain columns with HGVS. \n'
                                                                             'Please try again\n' + constants.bottom)
                         else:
