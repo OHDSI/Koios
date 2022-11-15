@@ -107,10 +107,10 @@
             <div class="t442__btn-img-wrapper"><img src="{{ url_for('static',filename='imgs/3.png') }}" style="height: 70px" imgfield="img" alt="tild3632-6432-4034-a665-666633343761__ic_info_outline_black"></div>
             <br>
             <br>
-            <div class="t225__title t-title t-title_name" field="title" style="text-transform:uppercase;color:#FFFFFF;">
+            <!--<div class="t225__title t-title t-title_name" field="title" style="text-transform:uppercase;color:#FFFFFF;">
               <a href="https://koios.ohdsi.org" style="color:#FFFFFF">KOIOS</a>
-            </div>
-
+            </div>-->
+            <div class="t442__btn-img-wrapper"><img src="{{ url_for('static',filename='imgs/title-beta-20.png') }}" style="height: 150px" imgfield="img"; display: block; margin-left: auto; margin-right: auto; width: 50%; alt="tild3632-6432-4034-a665-666633343761__ic_info_outline_black"></div>
             <br>
             <br>
             <div class="t442__btn-text t-descr t-descr_md" style="color:#FFFFFF;">
@@ -228,7 +228,7 @@
                                 <br/><br/><br/><br/>
                                 <input type="file" name="files" id="inputTag" onchange="encodeImageFileAsURL(this)" class='visuallyhidden' multiple="true" />
                                                                                            
-                                <span id="imageName" class="t-text"></span>
+                                <span id="numberOfFiles" class="t-text"></span>
                                 <!--<label for="files"><strong>Choose a file</strong></label>-->
 
                                 
@@ -274,8 +274,15 @@
                       #imageName{
                         color:green;
                       }
+                      #numberOfFiles{
+                        color:green;
+                      }
                     </style>
                     <script>
+                      $(':file').change(function () {
+                          $('#numberOfFiles').text(this.files.length + " file selected");
+                      });
+
                         $('.file-upload-label').on('click', function(e) {
                             e.preventDefault();
                             $('#inputTag').trigger('click');
