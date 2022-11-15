@@ -6,32 +6,6 @@ import gzip
 import time
 from flask import Flask, render_template, request, send_file, session
 from werkzeug.utils import secure_filename
-<<<<<<< HEAD
-
-import constants
-import main
-
-
-shutil.rmtree(constants.hgvsg_folder_path)
-shutil.rmtree(constants.temp_folder_path)
-shutil.rmtree(constants.input_dir_path)
-shutil.rmtree(constants.output_dir_path)
-
-upload_folder = 'input/'
-temp_folder = 'temp/'
-output_folder = 'output/'
-hgvs_folder = 'hgvsg/'
-
-if not os.path.exists(upload_folder):
-    os.mkdir(upload_folder)
-if not os.path.exists(temp_folder):
-    os.mkdir(temp_folder)
-if not os.path.exists(output_folder):
-    os.mkdir(output_folder)
-
-if not os.path.exists(hgvs_folder):
-    os.mkdir(hgvs_folder)
-=======
 import shutil
 import app.constants as c
 import app.main as app_main
@@ -55,7 +29,6 @@ output_folder = c.output_dir_path
 
 # configuring the allowed extensions
 allowed_extensions = ['vcf', 'csv', 'txt']
->>>>>>> 75f6dbb (fixes of multi user and multi file issues)
 
 app = Flask(__name__,
             static_url_path='',
@@ -302,8 +275,6 @@ def get_current_postfix():
 @app.route('/download')
 def downloadFile():
     # For windows you need to use drive name [ex: F:/Example.pdf]
-<<<<<<< HEAD
-=======
     current_postfix = get_current_postfix()
     print(current_postfix)
     #substr = "outputOMOP_"
@@ -314,8 +285,6 @@ def downloadFile():
         if f.endswith('.csv') and 'OMOP' in f and str(current_postfix) in f:
             path = c.output_archive_user + f
             return send_file(path, as_attachment=True)
->>>>>>> 75f6dbb (fixes of multi user and multi file issues)
-
     return render_template('index.html', show_download=False, show_upload=False, show_loading=False, show_error=True)
 
 
