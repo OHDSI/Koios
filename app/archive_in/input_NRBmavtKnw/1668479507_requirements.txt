@@ -1,0 +1,26 @@
+Python 3.9.13
+flask
+urllib3
+xmltodict
+json
+requests
+psycopg2
+PIL
+args
+attrs
+dlib
+numpy
+numpydoc
+Pillow
+base64
+io
+gzip
+re
+sys
+math
+mediapipe
+os
+shutil
+pandas
+time
+werkzeug
