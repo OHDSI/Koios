@@ -281,7 +281,7 @@ def downloadFile():
         if f.endswith('.csv') and 'OMOP' in f and str(current_postfix) in f:
             path = c.output_archive_user + f
             return send_file(path, as_attachment=True)
-
+            
     return render_template('index.html', show_download=False, show_upload=False, show_loading=False, show_error=True)
 
 
