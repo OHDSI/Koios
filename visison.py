@@ -271,6 +271,7 @@ def get_current_postfix():
 
 @app.route('/download')
 def downloadFile():
+    # For windows you need to use drive name [ex: F:/Example.pdf]
     current_postfix = get_current_postfix()
     print(current_postfix)
     #substr = "outputOMOP_"
