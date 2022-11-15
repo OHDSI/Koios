@@ -68,14 +68,12 @@ def upload_file():
     return render_template('index.html', show_download=False, show_upload=True, show_loading=False)
 
 
-
 # The path to about file
 @app.route('/about')
 def show_about():
     return render_template('about.html')
 
 
-    
 @app.route('/upload', methods=['GET', 'POST'])
 def uploadfile():
     print("request received......")
@@ -232,7 +230,6 @@ def save_base64(base64_str):
 @app.route('/downloadhgvs')
 def downloadFileHGVSg():
     # For windows you need to use drive name [ex: F:/Example.pdf]
-
     path = hgvs_folder + "outputHGVSg.csv"
     return send_file(path, as_attachment=True)
 '''
@@ -274,7 +271,6 @@ def get_current_postfix():
 
 @app.route('/download')
 def downloadFile():
-    # For windows you need to use drive name [ex: F:/Example.pdf]
     current_postfix = get_current_postfix()
     print(current_postfix)
     #substr = "outputOMOP_"
@@ -285,6 +281,7 @@ def downloadFile():
         if f.endswith('.csv') and 'OMOP' in f and str(current_postfix) in f:
             path = c.output_archive_user + f
             return send_file(path, as_attachment=True)
+            
     return render_template('index.html', show_download=False, show_upload=False, show_loading=False, show_error=True)
 
 

@@ -5,18 +5,18 @@ import csv
 import time
 import random
 import pandas as pd
-from constants import output_dir_path, temp_folder, hgvsg_folder_path, input_dir, project_dir
+from app.constants import hgvsg_folder, temp_folder, hgvsg_folder_path, input_dir, project_dir,random_user_substring
 
 
-def parse_clingen(hgvsg_df, current_filename, vcf_mode=False):
-
+def parse_clingen(hgvsg_df, current_filename, vcf_mode=False, mult_build_mode=False):
+    hgvsg_df = hgvsg_df.reset_index()
     file_length = len(hgvsg_df['HGVSg'])
 
     http = urllib3.PoolManager()
     url = 'http://reg.test.genome.network/allele?hgvs='
 
-    #parsed_file_name = output_dir_path + current_filename + '_clingen.csv'
-    parsed_file_name = output_dir_path + 'outputClingen.csv'
+    #parsed_file_name = hgvsg_folder_path + current_filename + '_clingen.csv'
+    parsed_file_name = hgvsg_folder_path + 'outputClingen_' +  random_user_substring + '.csv'
 
 
     with open(parsed_file_name, 'w', encoding='utf-8') as csvfile:
@@ -38,19 +38,20 @@ def parse_clingen(hgvsg_df, current_filename, vcf_mode=False):
 
         ii = 1
 
-        for i in range(file_length):
-            seq = hgvsg_df['HGVSg'][i]
+        for i, seq in enumerate(hgvsg_df['HGVSg']):
+
+            if mult_build_mode:
+
+                try:
+                    seq2 = hgvsg_df['HGVSg37'][i]
+                    url_2 = hgvsg_df['url37'][i]
+                    mode_37_38 = True
+                except:
+                    mode_37_38 = False
 
 
-            try:
-                seq2 = hgvsg_df['HGVSg37'][i]
-                url_2 = hgvsg_df['url37'][i]
-                mode_37_38 = True
-            except:
-                mode_37_38 = False
 
-
-            # convert symbol > to special code %3E
+                # convert symbol > to special code %3E
             url_1 = url + requests.utils.quote(seq)
 
             print('#', ii, 'hgvs_name: ', seq, ': ', url_1)
@@ -58,37 +59,38 @@ def parse_clingen(hgvsg_df, current_filename, vcf_mode=False):
             res = http.request('GET', url_1)
             data = json.loads(res.data)
 
-            if mode_37_38:
-                res37 = http.request('GET', url_2)
-                data37 = json.loads(res37.data)
+            if mult_build_mode:
+                if mode_37_38:
+                    res37 = http.request('GET', url_2)
+                    data37 = json.loads(res37.data)
 
-                try:
-                    communityStandardTitle = data.get('communityStandardTitle')
-                except:
-                    pass
-                try:
-                    communityStandardTitle37 = data37.get('communityStandardTitle')
-                except:
-                    pass
+                    try:
+                        communityStandardTitle = data.get('communityStandardTitle')
+                    except:
+                        pass
+                    try:
+                        communityStandardTitle37 = data37.get('communityStandardTitle')
+                    except:
+                        pass
 
-                try:
-                    if len(communityStandardTitle) > 0:
-                        data = data
-                        seq = seq
-                except:
-                    pass
-                try:
-                    if len(communityStandardTitle37) > 0:
-                        data = data37
-                        seq = seq2
-                except:
-                    pass
+                    try:
+                        if len(communityStandardTitle) > 0:
+                            data = data
+                            seq = seq
+                    except:
+                        pass
+                    try:
+                        if len(communityStandardTitle37) > 0:
+                            data = data37
+                            seq = seq2
+                    except:
+                        pass
 
-                try:
-                    if len(communityStandardTitle37) > 0 and len(communityStandardTitle) > 0:
-                        continue
-                except:
-                    pass
+                    try:
+                        if len(communityStandardTitle37) > 0 and len(communityStandardTitle) > 0:
+                            continue
+                    except:
+                        pass
 
             try:
                 communityStandardTitle = data.get('communityStandardTitle')
@@ -163,5 +165,6 @@ def parse_clingen(hgvsg_df, current_filename, vcf_mode=False):
                 #writer.writerow({'HGVSc_vsf': seq, 'link': url_1,
                 #                 'communityStandardTitle': communityStandardTitle, 'type': 'error'})
                 pass
+
 
     return pd.read_csv(parsed_file_name)
