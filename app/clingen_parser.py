@@ -5,7 +5,8 @@ import csv
 import time
 import random
 import pandas as pd
-from app.constants import hgvsg_folder, temp_folder, hgvsg_folder_path, input_dir, project_dir,random_user_substring
+from app.constants import hgvsg_folder, temp_folder, hgvsg_folder_path, project_dir
+from flask import session
 
 
 def parse_clingen(hgvsg_df, current_filename, vcf_mode=False, mult_build_mode=False):
@@ -16,7 +17,7 @@ def parse_clingen(hgvsg_df, current_filename, vcf_mode=False, mult_build_mode=Fa
     url = 'http://reg.test.genome.network/allele?hgvs='
 
     #parsed_file_name = hgvsg_folder_path + current_filename + '_clingen.csv'
-    parsed_file_name = hgvsg_folder_path + 'outputClingen_' +  random_user_substring + '.csv'
+    parsed_file_name = hgvsg_folder_path + 'outputClingen_' + session["RNDUSERSTR"] + '.csv'
 
 
     with open(parsed_file_name, 'w', encoding='utf-8') as csvfile:

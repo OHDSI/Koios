@@ -7,6 +7,7 @@ import requests
 import xmltodict
 import re
 import csv
+from flask import session
 
 
 def get_chr_names(vcf_path):
@@ -129,7 +130,7 @@ def pipeline(filename_vcf_gz):
     build_file2 = create_build_file(c.assembly_dir_path + 'GCF_000001405.13_GRCh37_assembly_report.txt')
 
     print('\nProcessing file: ' + filename_vcf_gz)
-    filename_vcf_gz_path = c.project_dir + '/' + c.input_dir + filename_vcf_gz
+    filename_vcf_gz_path = c.project_dir + '/' + c.input_dir + session["RNDUSERSTR"] + '/' + filename_vcf_gz
 
     names = get_vcf_names(filename_vcf_gz_path)
     if names == 'wrong':

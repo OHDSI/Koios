@@ -14,7 +14,7 @@ import app.website_usecase as web
 import app.vocab_usecase as vocab
 #import app.move_old_files as move
 import psycopg2
-from flask import render_template
+from flask import render_template, session
 
 
 def main(input_directory,
@@ -62,7 +62,7 @@ def main(input_directory,
     else:
         for current_filename in files_list:
             if current_filename.endswith(".vcf") or current_filename.endswith(".vcf.gz"):
-                path_to_current_file = os.path.join(c.input_dir_path, current_filename)
+                path_to_current_file = os.path.join(input_directory, current_filename)
                 if os.path.getsize(path_to_current_file) == 0:
                     print('file ', current_filename, ' has 0 characters. Please double check.')
                     count_empty_files += 1
@@ -85,7 +85,7 @@ def main(input_directory,
                 counter += 1
 
             if current_filename.endswith(".xml"):
-                path_to_current_file = os.path.join(c.input_dir_path, current_filename)
+                path_to_current_file = os.path.join(input_directory, current_filename)
                 if os.path.getsize(path_to_current_file) == 0:
                     print('file ', current_filename, ' has 0 characters. Please double check.')
                     count_empty_files += 1
@@ -106,7 +106,7 @@ def main(input_directory,
                 counter += 1
 
             if current_filename.endswith(".txt") or current_filename.endswith(".csv"):
-                path_to_current_file = os.path.join(c.input_dir_path, current_filename)
+                path_to_current_file = os.path.join(input_directory, current_filename)
                 if os.path.getsize(path_to_current_file) == 0:
                     print('file ', current_filename, ' has 0 characters. Please double check.')
                     count_empty_files += 1
@@ -117,7 +117,7 @@ def main(input_directory,
                         return render_template('index.html', show_download=False, show_upload=False, show_loading=False, show_error=True)
                     continue
 
-                df = pd.read_csv(c.project_dir + '/' + c.input_dir + current_filename, sep="\t", header=None)
+                df = pd.read_csv(os.path.join(input_directory, current_filename), sep="\t", header=None)
 
                 clean_hgvs_list = check_hgvs_pattern(df)
 

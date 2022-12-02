@@ -12,14 +12,14 @@ from app.clingen_parser import parse_clingen
 from app.OMOP_mapping import map_to_omop
 #import app.move_old_files as move
 import psycopg2
-from flask import render_template
+from flask import session, render_template
 
 
 
 def run_web(filename):
     count_empty_files = 0
     if filename.endswith(".vcf") or filename.endswith(".vcf.gz"):
-        path_to_current_file = os.path.join(c.input_dir_path, filename)
+        path_to_current_file = os.path.join(c.input_dir_path + session["RNDUSERSTR"], filename)
         if os.path.getsize(path_to_current_file) == 0:
             print('file ', filename, ' has 0 characters. Please double check.')
             count_empty_files += 1
@@ -36,7 +36,7 @@ def run_web(filename):
 
 
     if filename.endswith(".xml"):
-        path_to_current_file = os.path.join(c.input_dir_path, filename)
+        path_to_current_file = os.path.join(c.input_dir_path + session["RNDUSERSTR"], filename)
         if os.path.getsize(path_to_current_file) == 0:
             print('file ', filename, ' has 0 characters. Please double check.')
             count_empty_files += 1
@@ -53,14 +53,14 @@ def run_web(filename):
 
 
     if filename.endswith(".txt") or filename.endswith(".csv"):
-        path_to_current_file = os.path.join(c.input_dir_path, filename)
+        path_to_current_file = os.path.join(c.input_dir_path + session["RNDUSERSTR"], filename)
         if os.path.getsize(path_to_current_file) == 0:
             print('file ', filename, ' has 0 characters. Please double check.')
             count_empty_files += 1
             if count_empty_files == 3:
                 render_template('index.html', show_download=False, show_upload=False, show_loading=False, show_error=True)
 
-        df = pd.read_csv(c.project_dir + '/' + c.input_dir + filename, sep="\t", header=None)
+        df = pd.read_csv(c.project_dir + '/' + c.input_dir + session["RNDUSERSTR"] + '/' + filename, sep="\t", header=None)
 
         clean_hgvs_list = check_hgvs_pattern(df)
 

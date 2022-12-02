@@ -15,12 +15,13 @@ import string
 import random
 from io import BytesIO
 from zipfile import ZipFile
+import traceback
 
 
 shutil.rmtree(c.hgvsg_folder_path)
 shutil.rmtree(c.temp_folder_path)
-shutil.rmtree(c.input_dir_path)
-shutil.rmtree(c.output_dir_path)
+#shutil.rmtree(c.input_dir_path)
+#shutil.rmtree(c.output_dir_path)
 
 hgvs_folder = c.hgvsg_folder_path
 temp_folder = c.temp_folder_path
@@ -35,26 +36,52 @@ app = Flask(__name__,
             static_folder='static',
             template_folder='templates')
 
+app.secret_key = SECRET_KEY = os.urandom(32)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "memcached"
 app.config['UPLOAD_FOLDER'] = upload_folder
 app.config['MAX_CONTENT_PATH'] = 10000000
-app.secret_key = SECRET_KEY = os.urandom(28)
-
-@app.before_request
-def clear_session():
-    session.permanent=True
-    session.clear()
-
+#@app.before_request
+#def clear_session():
+#    session.permanent=True
+#    session.clear()
 
 
 def configure_app():
-    if not os.path.exists(upload_folder):
-        os.mkdir(upload_folder)
+    symbols = string.ascii_letters
+
+
+    if not "RNDUSERSTR" in session:
+        session["RNDUSERSTR"] = ''.join(random.choice(symbols) for i in range(10)) 
+        print("created random user substring: ", session["RNDUSERSTR"])
+    else:
+        print("reused random user substring: ", session["RNDUSERSTR"])
+
+    #if not os.path.exists(upload_folder):
+    #    os.mkdir(upload_folder)
+
+    if not os.path.exists(upload_folder + session["RNDUSERSTR"]):
+        os.mkdir(upload_folder + session["RNDUSERSTR"])
+
     if not os.path.exists(temp_folder):
         os.mkdir(temp_folder)
-    if not os.path.exists(output_folder):
-        os.mkdir(output_folder)
+    #if not os.path.exists(output_folder):
+    #    os.mkdir(output_folder)     
+
+    if not os.path.exists(output_folder + session["RNDUSERSTR"]):
+        os.mkdir(output_folder + session["RNDUSERSTR"])
+
     if not os.path.exists(hgvs_folder):
         os.mkdir(hgvs_folder)
+
+    input_archive_user = os.path.join(c.input_old_path, c.input_dir) + session["RNDUSERSTR"] + "/"
+    output_archive_user = os.path.join(c.export_dir_path, c.output_dir) + session["RNDUSERSTR"] + "/"
+
+    if not os.path.exists(input_archive_user):
+        os.mkdir(input_archive_user)
+
+    if not os.path.exists(output_archive_user):
+        os.mkdir(output_archive_user)
 
 
 def check_file_extension(filename):
@@ -79,6 +106,11 @@ def uploadfile():
     print("request received......")
     configure_app()
 
+    user_upload_folder = upload_folder + session["RNDUSERSTR"] + "/"
+    user_output_folder = output_folder + session["RNDUSERSTR"] + "/"
+    input_archive_user = os.path.join(c.input_old_path, c.input_dir) + session["RNDUSERSTR"] + "/"
+    output_archive_user = os.path.join(c.export_dir_path, c.output_dir) + session["RNDUSERSTR"] + "/"
+
     if request.method == 'POST':  # check if the method is post
         # request.form['file']
         files = request.files.getlist('files')  # get the file from the files object
@@ -96,9 +128,11 @@ def uploadfile():
             print(f.filename)
             # Saving the file in the required destination
             if check_file_extension(f.filename):
+                
                 f.save(
-                    os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))  # this will secure the file
+                    os.path.join(user_upload_folder, secure_filename(f.filename)))  # this will secure the file
             else:
+                
                 return render_template('index.html', show_download=False, show_upload=False, show_loading=False, show_error=True)
                 #sys.exit('Unsupported file extension')
 
@@ -106,8 +140,10 @@ def uploadfile():
 
             try:
                 output = process_file(fname)
-            except:
-                os.remove(os.path.join(upload_folder,fname))
+            except Exception as e:
+                print("SOMETHING WRONG")
+                print(str(traceback.format_exc()))
+                os.remove(os.path.join(user_upload_folder, fname))
                 return render_template('index.html', show_download=False, show_upload=False, show_loading=False, show_error=True)
 
 
@@ -128,14 +164,14 @@ def uploadfile():
 
 
 
-                for filename in os.listdir(upload_folder):
-                    os.rename(upload_folder+filename, upload_folder+random_file_substring_session+'_'+filename)
+                for filename in os.listdir(user_upload_folder):
+                    os.rename(user_upload_folder+filename, user_upload_folder+random_file_substring_session+'_'+filename)
 
-                for filename in os.listdir(output_folder):
-                    os.rename(output_folder+filename, output_folder+random_file_substring_session+'_'+filename)
+                for filename in os.listdir(user_output_folder):
+                    os.rename(user_output_folder+filename, user_output_folder+random_file_substring_session+'_'+filename)
 
-                move.move_old_input_files(upload_folder, c.input_archive_user)
-                move.move_old_input_files(output_folder, c.output_archive_user)
+                move.move_old_input_files(user_upload_folder, input_archive_user)
+                move.move_old_input_files(user_output_folder, output_archive_user)
                 #shutil.move(user_output_folder, c.export_dir_path)
 
                 #delete_temp_directories(c.project_dir)
@@ -238,13 +274,22 @@ def downloadFileHGVSg():
 @app.route('/downloadclingen')
 def downloadFileClingen():
     # For windows you need to use drive name [ex: F:/Example.pdf]
+    if "RNDUSERSTR" in session:
+        input_archive_user = os.path.join(c.input_old_path, c.input_dir) + session["RNDUSERSTR"] + "/"
+        output_archive_user = os.path.join(c.export_dir_path, c.output_dir) + session["RNDUSERSTR"] + "/"
 
-    path = c.output_archive_user + "outputClingen_" +c.random_user_substring + ".csv"
-    return send_file(path, as_attachment=True)
+        path = output_archive_user + "outputClingen_" + session["RNDUSERSTR"] + ".csv"
+        return send_file(path, as_attachment=True)
+    else:
+        # redirect to start page
+        return None
 
 
 def get_current_postfix():
-    input_files = os.listdir(c.input_archive_user)
+    input_archive_user = os.path.join(c.input_old_path, c.input_dir) + session["RNDUSERSTR"] + "/"
+    output_archive_user = os.path.join(c.export_dir_path, c.output_dir) + session["RNDUSERSTR"] + "/"
+
+    input_files = os.listdir(input_archive_user)
     current_time_str = str(time.time())
     currently = re.findall('(\d+)\.',current_time_str)[0]
 
@@ -275,12 +320,15 @@ def downloadFile():
     current_postfix = get_current_postfix()
     print(current_postfix)
     #substr = "outputOMOP_"
-    output_files = os.listdir(c.output_archive_user)
+    input_archive_user = os.path.join(c.input_old_path, c.input_dir) + session["RNDUSERSTR"] + "/"
+    output_archive_user = os.path.join(c.export_dir_path, c.output_dir) + session["RNDUSERSTR"] + "/"
+
+    output_files = os.listdir(output_archive_user)
     print(output_files)
     for f in output_files:
         print(f)
         if f.endswith('.csv') and 'OMOP' in f and str(current_postfix) in f:
-            path = c.output_archive_user + f
+            path = output_archive_user + f
             return send_file(path, as_attachment=True)
             
     return render_template('index.html', show_download=False, show_upload=False, show_loading=False, show_error=True)
@@ -289,8 +337,10 @@ def downloadFile():
 
 @app.route('/download_archive')
 def downloadFileArchive():
+    input_archive_user = os.path.join(c.input_old_path, c.input_dir) + session["RNDUSERSTR"] + "/"
+    output_archive_user = os.path.join(c.export_dir_path, c.output_dir) + session["RNDUSERSTR"] + "/"
 
-    target = c.output_archive_user
+    target = output_archive_user
 
     stream = BytesIO()
     with ZipFile(stream, 'w') as zf:
