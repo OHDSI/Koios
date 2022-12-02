@@ -12,17 +12,17 @@ vocab = 'OMOP_Genomic/'
 
 
 # printing letters
-letters = string.ascii_letters
-random_user_substring = ''.join(random.choice(letters) for i in range(10))
-print("random user substring: ", random_user_substring)
+#letters = string.ascii_letters
+#random_user_substring = ''.join(random.choice(letters) for i in range(10))
+#print("random user substring: ", random_user_substring)
 
-input_dir = 'input_' + random_user_substring + '/'
-output_dir = 'output_' + random_user_substring + '/'
+input_dir = 'input_'# + random_user_substring + '/'
+output_dir = 'output_'# + random_user_substring + '/'
 
 project_dir = os.path.dirname(os.path.realpath(__file__))
 
 input_dir_path = os.path.join(project_dir, input_dir)
-print(input_dir_path)
+#print(input_dir_path)
 output_dir_path = os.path.join(project_dir, output_dir)
 temp_folder_path = os.path.join(project_dir, temp_folder)
 hgvsg_folder_path = os.path.join(project_dir, hgvsg_folder)
@@ -31,11 +31,11 @@ input_old_path = os.path.join(project_dir, input_old)
 export_dir_path = os.path.join(project_dir, export_dir)
 vocab_path = os.path.join(project_dir, vocab)
 
-input_archive_user = os.path.join(input_old_path, input_dir)
-output_archive_user = os.path.join(export_dir_path, output_dir)
-
-print(input_archive_user)
-print(output_archive_user)
+#input_archive_user = os.path.join(input_old_path, input_dir)
+#output_archive_user = os.path.join(export_dir_path, output_dir)
+                                                             
+#print(input_archive_user)
+#print(output_archive_user)
 
 os.makedirs(os.path.dirname(input_old_path), exist_ok=True)
 os.makedirs(os.path.dirname(export_dir_path), exist_ok=True)
@@ -45,9 +45,8 @@ os.makedirs(os.path.dirname(hgvsg_folder_path), exist_ok=True)
 os.makedirs(os.path.dirname(assembly_dir_path), exist_ok=True)
 os.makedirs(os.path.dirname(input_dir_path), exist_ok=True)
 os.makedirs(os.path.dirname(vocab_path), exist_ok=True)
-os.makedirs(os.path.dirname(input_archive_user), exist_ok=True)
-os.makedirs(os.path.dirname(output_archive_user), exist_ok=True)
-
+#os.makedirs(os.path.dirname(input_archive_user), exist_ok=True)
+#os.makedirs(os.path.dirname(output_archive_user), exist_ok=True)
 
 # terminal parameters options
 opts_options_array = ['--vocab_server', '-vs',

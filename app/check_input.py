@@ -60,7 +60,7 @@ def check_directories(input_dir):
     if not any(os.scandir(input_dir)) \
             or (len(input_files) == 1 and input_files[0].endswith('.DS_Store')):
 
-        sys.exit('\nWarning: /input/ directory is empty. Please add input files.\n'
+        sys.exit('\nWarning: /' + input_dir + '/ directory is empty. Please add input files.\n'
                      + c.bottom)
 
 
