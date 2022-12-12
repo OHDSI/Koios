@@ -99,7 +99,6 @@
               VCF, HGVS &#x2192 OMOP Genomic
             </div>
             
-
             <div class="t225__uptitle t-uptitle t-uptitle_sm" field="subtitle" style="text-transform:uppercase;color:#FFFFFF;">
               <a href="https://odysseusinc.com/" style="color:#FFFFFF;text-decoration: underline;">Odysseus Data Services</a>
             </div>
@@ -184,14 +183,17 @@
 
 {% if show_upload%}  
 
+
 <div id="rec470150922" class="r t-rec t-rec_pt_120 t-rec_pb_105" style="padding-top:120px;padding-bottom:105px;" data-animationappear="off" data-record-type="678">
       <!-- t678 -->
       <div class="t678">
         <div class="t-container">
+          <div class="t-col t-col_8 t-prefix_2">
 
             <div>
-                <div class="t-form__inputsbox">
-                  
+              <div class="js-successbox t-form__successbox t-text t-text_md" style="display:none;"></div>
+              <div class="t-form__inputsbox">
+
                   <div class="t-input-group t-input-group_tx" data-input-lid="1502974026489">
                     <div class="t-input-block">
                       <div class="t-text" field="li_text__1502974026489">
@@ -202,6 +204,60 @@
                       <div class="t-input-error"></div>
                     </div>
                   </div>
+
+
+                  <div class="t-input-group t-input-group_nm" data-input-lid="1494858943227">
+                    <div class="t-input-title t-descr t-descr_md" data-redactor-toolbar="no" field="li_title__1494858943227" style="">
+                      Name and surname
+                    </div>
+                    <div class="t-input-block">
+                      <input type="text" autocomplete="name" name="Name" id="textfield_user_name" class="t-input js-tilda-rule" data-tilda-req="1" data-tilda-rule="name" style="color:#000000; border:1px solid #000000;">
+                      <div class="t-input-error" id="textfield_user_name_error"></div>
+                    </div>
+                  </div>
+                  <div class="t-input-group t-input-group_em" data-input-lid="1493283059688">
+                    <div class="t-input-title t-descr t-descr_md" data-redactor-toolbar="no" field="li_title__1493283059688" style="">
+                      Email
+                    </div>
+                    <div class="t-input-block">
+                      <input type="text" autocomplete="email" name="Email" id="textfield_user_email" class="t-input js-tilda-rule" value="" data-tilda-req="1" data-tilda-rule="email" style="color:#000000; border:1px solid #000000;">
+                      <div class="t-input-error" id="textfield_user_email_error"></div>
+                    </div>
+                  </div>
+                  <div class="t-input-group t-input-group_nm" data-input-lid="1494858943227">
+                    <div class="t-input-title t-descr t-descr_md" data-redactor-toolbar="no" field="li_title__1494858943227" style="">
+                      Organization
+                    </div>
+                    <div class="t-input-block">
+                      <input type="text" autocomplete="name" name="Name" id="textfield_user_organization" class="t-input js-tilda-rule" value="" data-tilda-req="1" data-tilda-rule="name" style="color:#000000; border:1px solid #000000;">
+                      <div class="t-input-error"></div>
+                    </div>
+                  </div>
+                  <div class="t-input-group t-input-group_ta" data-input-lid="1500389415192">
+                    <div class="t-input-title t-descr t-descr_md" data-redactor-toolbar="no" field="li_title__1500389415192" style="">
+                      Comments and Questions
+                    </div>
+                    <div class="t-input-block">
+                      <textarea name="Comments and Questions" id="textfield_user_comments" class="t-input js-tilda-rule" style="color:#000000; border:1px solid #000000; height:102px" rows="3"></textarea>
+                      <div class="t-input-error"></div>
+                    </div>
+                  </div>
+
+
+              
+              <style>
+              #rec470150922 input::-webkit-input-placeholder {color:#000000; opacity: 0.5;}
+              #rec470150922 input::-moz-placeholder {color:#000000; opacity: 0.5;}
+              #rec470150922 input:-moz-placeholder {color:#000000; opacity: 0.5;}
+              #rec470150922 input:-ms-input-placeholder {color:#000000; opacity: 0.5;}
+              #rec470150922 textarea::-webkit-input-placeholder {color:#000000; opacity: 0.5;}
+              #rec470150922 textarea::-moz-placeholder {color:#000000; opacity: 0.5;}
+              #rec470150922 textarea:-moz-placeholder {color:#000000; opacity: 0.5;}
+              #rec470150922 textarea:-ms-input-placeholder {color:#000000; opacity: 0.5;}
+              </style>
+
+                  
+
 
                   <div class="t-input-group t-input-group_tx" data-input-lid="1658140105609">
                     <div class="t-input-block">
@@ -214,13 +270,18 @@
                     </div>
                   </div>
                   
-                  <div class="t-col t-col_8 t-prefix_2">
+                  
                     <form
                                 class = "input-form1"
                                 id = "upload_form"
                                 action="/upload"
                                 method="POST"
                                 enctype="multipart/form-data">
+                                <input type="hidden" value="" name="user_name" id="field_user_name"/>
+                                <input type="hidden" value="" name="user_email" id="field_user_email"/>
+                                <input type="hidden" value="" name="user_organization" id="field_user_organization"/>
+                                <input type="hidden" value="" name="user_comments" id="field_user_comments"/>
+
                                 <br/><br/><br/><br/>
                                 <i class="fa fa-2x fa-file"></i>
                                 <label for="files" id="choosefilelbl" class="file-upload-label t-text"><strong>Choose files: </strong></label>
@@ -296,18 +357,75 @@
 
                             imageName.innerText = inputImage.name;
                         })
-                    </script>
+                        //$("#upload_form").submit(function (evt) {
+                        $('body').on('submit', '#upload_form', function(evt) {
+                             var errors = 0;
+                             $('#textfield_user_name_error').text("");
+                             $('#textfield_user_email_error').text("");
+                             $('#no_files_error').text("");
+                             $('#agree_with_pp_error').text("");
+                             $('#textfield_user_name_error').hide();
+                             $('#textfield_user_email_error').hide();
+                             $('#no_files_error').hide();
+                             $('#agree_with_pp_error').hide("");
 
-                    <br>
+                             //
+                             if (!$('#textfield_user_name').val()) {
+                                 $('#textfield_user_name_error').text("This is a mandatory field");
+                                 $('#textfield_user_name_error').show();
+                                 errors = errors + 1;
+                             }
+                             if (!$('#textfield_user_email').val()) {
+                                 $('#textfield_user_email_error').text("This is a mandatory field");
+                                 $('#textfield_user_email_error').show();
+                                 errors = errors + 1;
+                             }
+                             if (!$('#numberOfFiles').text() || $('#numberOfFiles').text()=='0 file selected') {
+                                 $('#no_files_error').text("Please choose at least 1 file");
+                                 $('#no_files_error').show();
+                                 errors = errors + 1;
+                             }
+                             if (!$("#agree_with_pp").is(':checked')) {
+                                 $('#agree_with_pp_error').text("Please agree with the privacy policy");
+                                 $('#agree_with_pp_error').show();
+                                 errors = errors + 1;
+                             }
+                             console.log($('#numberOfFiles').text());
+                             console.log("Errors: " + errors);
+                             if (errors > 0) {
+                                 evt.preventDefault();                             
+                                 return;
+                             }
+                             else {
+                                 $('#field_user_name').val($('#textfield_user_name').val());
+                                 $('#field_user_email').val($('#textfield_user_email').val());
+                                 $('#field_user_organization').val($('#textfield_user_organization').val());
+                                 $('#field_user_comments').val($('#textfield_user_comments').val());
+
+                                 $('#textfield_user_name').attr("disabled", true);
+                                 $('#textfield_user_email').attr("disabled", true);
+                                 $('#textfield_user_organization').attr("disabled", true);
+                                 $('#textfield_user_comments').attr("disabled", true);
+                        
+                                 $('#inputTag').hide();
+                                 $('#submitbtn').hide();
+                                 $('#choosefilelbl').hide();
+                                 $('#submitcheckbox').hide();
+                                 $('#loadinglbl').show();
+                             }
+                        });
+                    </script>
+                    <div class="t-input-error" id="no_files_error"></div>
+                    <br/>
                     
 
                     <div class="t-input-group t-input-group_cb" data-input-lid="1500385262521" id="submitcheckbox">
-                      <div class="t-input-block"> <label class="t-checkbox__control t-text t-text_xs" style=""><input type="checkbox" name="Checkbox" value="yes" class="t-checkbox js-tilda-rule" data-tilda-req="1"><div class="t-checkbox__indicator"></div>I agree to the Privacy Policy</label> <div class="t-input-error"></div> </div>
+                      <div class="t-input-block"> <label class="t-checkbox__control t-text t-text_xs" style=""><input type="checkbox" id="agree_with_pp" name="Checkbox" value="yes" class="t-checkbox js-tilda-rule" data-tilda-req="1"><div class="t-checkbox__indicator"></div>I agree to the Privacy Policy</label> <div id="agree_with_pp_error" class="t-input-error"></div> </div>
                     </div>
 
 
                     <div class="button-submit" data-input-lid="1658140105609">
-                    <button class="nadenka" type="submit" form="upload_form" id="submitbtn" value="Submit" onclick="showSubmit(this)">Submit</button>
+                    <button class="nadenka" id="submitbtn" type="submit" form="upload_form" value="Submit">Submit</button>
 
                     <style>
                       .button-submit{
@@ -335,12 +453,10 @@
                     </style>
                     <script>
                        function showSubmit(e) {
-                         //console.log("function showSubmit 1");
-                         $('#inputTag').hide();
-                         $('#submitbtn').hide();
-                         $('#choosefilelbl').hide();
-                         $('#submitcheckbox').hide();
-                         $('#loadinglbl').show();
+                         //}
+                         //else {
+                         //    e.preventDefault();
+                         //}
                          //console.log("function showSubmit 2");
                        }
                     </script>
@@ -425,11 +541,12 @@
   <div class="t-tildalabel" id="tildacopy" data-tilda-sign="5843205#29078480">
   <a href="https://odysseusinc.com/" class="t-tildalabel__link">
   <div class="t-tildalabel__wrapper">
-    <div class="t-tildalabel__txtright">
+    <div class="t-tildalabel__txtleft">
       Made by
     </div>
     
     <div class="t-tildalabel__wrapimg"><img src="https://odysseusinc.com/wp-content/themes/odysseus/img/logo_1.png" class="t-tildalabel__img" fetchpriority="low" alt="tildacopy"></div>
+
     <div class="t-tildalabel__txtright">
       Odysseus Inc
     </div>
