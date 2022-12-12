@@ -9,7 +9,7 @@ temp_folder = 'temp/'
 hgvsg_folder = 'hgvsg/'
 input_old = 'archive_in/'
 vocab = 'OMOP_Genomic/'
-
+user_info = 'user_info/'
 
 # printing letters
 #letters = string.ascii_letters
@@ -30,6 +30,8 @@ assembly_dir_path = os.path.join(project_dir, assembly_dir)
 input_old_path = os.path.join(project_dir, input_old)
 export_dir_path = os.path.join(project_dir, export_dir)
 vocab_path = os.path.join(project_dir, vocab)
+
+user_info_path = os.path.join(project_dir, user_info)
 
 #input_archive_user = os.path.join(input_old_path, input_dir)
 #output_archive_user = os.path.join(export_dir_path, output_dir)

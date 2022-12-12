@@ -16,6 +16,8 @@ import random
 from io import BytesIO
 from zipfile import ZipFile
 import traceback
+import smtplib
+
 
 
 shutil.rmtree(c.hgvsg_folder_path)
@@ -27,6 +29,10 @@ hgvs_folder = c.hgvsg_folder_path
 temp_folder = c.temp_folder_path
 upload_folder = c.input_dir_path
 output_folder = c.output_dir_path
+userinfo_folder = c.user_info_path
+
+gmail_user = 'email_address'
+gmail_password = 'pwd'
 
 # configuring the allowed extensions
 allowed_extensions = ['vcf', 'csv', 'txt']
@@ -63,6 +69,9 @@ def configure_app():
     if not os.path.exists(upload_folder + session["RNDUSERSTR"]):
         os.mkdir(upload_folder + session["RNDUSERSTR"])
 
+    if not os.path.exists(userinfo_folder):
+        os.mkdir(userinfo_folder)
+
     if not os.path.exists(temp_folder):
         os.mkdir(temp_folder)
     #if not os.path.exists(output_folder):
@@ -70,6 +79,9 @@ def configure_app():
 
     if not os.path.exists(output_folder + session["RNDUSERSTR"]):
         os.mkdir(output_folder + session["RNDUSERSTR"])
+
+    if not os.path.exists(userinfo_folder + session["RNDUSERSTR"]):
+        os.mkdir(userinfo_folder + session["RNDUSERSTR"])
 
     if not os.path.exists(hgvs_folder):
         os.mkdir(hgvs_folder)
@@ -101,6 +113,47 @@ def show_about():
     return render_template('about.html')
 
 
+def send_email(user_name, user_email, user_organization, user_comments):
+    sent_from = gmail_user
+    to = [gmail_user]
+    subject = 'Message from KOIOS user'
+    body = ""
+    body = body + "User info:\r\n\r\n"
+    body = body + "NAME AND SURNAME:\r\n"
+    body = body + user_name + "\r\n"
+    body = body + "EMAIL:\r\n"
+    body = body + user_email + "\r\n"
+    body = body + "ORGANIZATION:\r\n"
+    body = body + user_organization + "\r\n"
+    body = body + "QUESTIONS AND COMMENTS:\r\n"
+    body = body + user_comments
+
+    email_text = "From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s" % (sent_from, ", ".join(to), subject, body)
+
+    try:
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.ehlo()
+        server.login(gmail_user, gmail_password)
+        server.sendmail(sent_from, to, email_text)
+        server.close()
+
+        print('Email sent!')
+    except Exception as e:
+        print(e)
+        print('Something went wrong at the send_email step...')
+
+def save_user_info(user_name, user_email, user_organization, user_comments):
+    userfile_name = userinfo_folder + session["RNDUSERSTR"] + "/user_info.txt"
+    with open(userfile_name, 'w') as f:
+        f.write("NAME AND SURNAME:\n")
+        f.write(user_name + "\n")
+        f.write("EMAIL:\n")
+        f.write(user_email + "\n")
+        f.write("ORGANIZATION:\n")
+        f.write(user_organization + "\n")
+        f.write("QUESTIONS AND COMMENTS:\n")
+        f.write(user_comments.replace("\r","") + "\n")
+
 @app.route('/upload', methods=['GET', 'POST'])
 def uploadfile():
     print("request received......")
@@ -112,6 +165,14 @@ def uploadfile():
     output_archive_user = os.path.join(c.export_dir_path, c.output_dir) + session["RNDUSERSTR"] + "/"
 
     if request.method == 'POST':  # check if the method is post
+        #print(str(request.form))
+        user_name = request.form['user_name']
+        user_email = request.form['user_email']
+        user_organization = request.form['user_organization']
+        user_comments = request.form['user_comments']
+        save_user_info(user_name, user_email, user_organization, user_comments)
+
+        #send_email(user_name, user_email, user_organization, user_comments)
         # request.form['file']
         files = request.files.getlist('files')  # get the file from the files object
         n_files = len(files)
