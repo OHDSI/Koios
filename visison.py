@@ -32,9 +32,11 @@ output_folder = c.output_dir_path
 userinfo_folder = c.user_info_path
 
 
+gmail_user = '1'
+gmail_password = '2'
 # Get environment variables
-gmail_user = os.getenv('GMAIL_USER')
-gmail_password = os.environ.get('GMAIL_PASSWORD')
+#gmail_user = os.getenv('GMAIL_USER')
+#gmail_password = os.environ.get('GMAIL_PASSWORD')
 
 # configuring the allowed extensions
 allowed_extensions = ['vcf', 'csv', 'txt']
@@ -174,7 +176,7 @@ def uploadfile():
         user_comments = request.form['user_comments']
         save_user_info(user_name, user_email, user_organization, user_comments)
 
-        send_email(user_name, user_email, user_organization, user_comments)
+        #send_email(user_name, user_email, user_organization, user_comments)
         # request.form['file']
         files = request.files.getlist('files')  # get the file from the files object
         n_files = len(files)
