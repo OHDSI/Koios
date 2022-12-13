@@ -194,7 +194,7 @@ Next steps are executed in the HGVS mode.
 
 <h3> 
 
-Step 1: VCF Processing
+Step 1: HGVS Processing
 
 </h3> 
 
