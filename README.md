@@ -216,7 +216,7 @@ ___
 
 OHDSI
 <br>
-Odysseus Data Sevices
+Odysseus Data Services
 
 ---
 
