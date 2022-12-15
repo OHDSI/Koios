@@ -10,6 +10,9 @@
 
 
 
+<h3> Technical support: </h3>
+
+Nadia koios@ohdsi.org nadia.kadakova@odysseusinc.com
 
 <h3> Overview </h3>
 
@@ -226,7 +229,3 @@ Links
 [3] https://varnomen.hgvs.org/bg-material/simple/
 
 ---
-
-Technical contact:
-
-Nadia Kadakova nadia.kadakova@odysseusinc.com
