@@ -125,14 +125,19 @@ def pipeline_xml(filename_xml):
     return results
 
 
-def pipeline(filename_vcf_gz):
+def pipeline(filename_vcf_gz, website_mode):
     build_file = create_build_file(c.assembly_dir_path + 'GCF_000001405.26_GRCh38_assembly_report.txt')
     build_file2 = create_build_file(c.assembly_dir_path + 'GCF_000001405.13_GRCh37_assembly_report.txt')
 
     print('\nProcessing file: ' + filename_vcf_gz)
-    filename_vcf_gz_path = c.project_dir + '/' + c.input_dir + session["RNDUSERSTR"] + '/' + filename_vcf_gz
+    if website_mode:
+        filename_vcf_gz_path = c.project_dir + '/' + c.input_dir + session["RNDUSERSTR"] + '/' + filename_vcf_gz
+    else:
+        filename_vcf_gz_path = c.project_dir + '/' + c.input_dir_local + filename_vcf_gz
 
     names = get_vcf_names(filename_vcf_gz_path)
+
+
     if names == 'wrong':
         print('skipped, wrong format')
         return 'wrong'
@@ -272,13 +277,13 @@ def pipeline_txt(filename, hgvs_list, mode='clean'):
             for i in range(num_hgvs):
                 hgvs = hgvs_list[i]
 
-                chr_num = re.findall(r'chr(\w)', hgvs)[0]
+                chr_num = re.findall(r'chr(\w+)', hgvs)[0]
 
                 rel_code_38 = build_file[build_file['Sequence-Role']==chr_num].reset_index()['Relationship'][0]
 
                 rel_code_37 = build_file2[build_file2['Sequence-Role']==chr_num].reset_index()['Relationship'][0]
 
-                right_part = re.findall(r'chr\w(.+)',hgvs)[0]
+                right_part = re.findall(r'chr\w+(.+)',hgvs)[0]
                 hgvs_38 = rel_code_38 + right_part
                 hgvs_37 = rel_code_37 + right_part
                 url1 = url + hgvs_38
@@ -300,31 +305,26 @@ def check_chr_pattern(df):
             test_string = current_col[i]
 
             #print(test_string)
-
             if re.search(pattern, test_string):
                 count_matches+=1
-
         if count_matches >= 0.8*len(df):
             chr_hgvs_col = col
-
-
             break
 
     try:
         df['HGVSg'] = df[chr_hgvs_col]
         hgvs_list = df['HGVSg']
-
         return hgvs_list
 
     except:
         return []
+
 
 def check_hgvs_pattern(df):
     pattern = c.clean_pattern
 
     for col in df.columns:
         current_col = df[col]
-
         count_matches = 0
 
         for i in range(len(df)):
@@ -349,16 +349,10 @@ def check_hgvs_pattern(df):
         return []
 
 
-def pipeline_vocab(hgvs_list):
-    build_file = create_build_file(c.assembly_dir_path + 'GCF_000001405.26_GRCh38_assembly_report.txt')
-    build_file2 = create_build_file(c.assembly_dir_path + 'GCF_000001405.13_GRCh37_assembly_report.txt')
-    # TBA
-
-
 if __name__ == '__main__':
     filename_vcf_gz_array = os.listdir(c.input_dir_path)
 
     for filename in filename_vcf_gz_array:
-        out = pipeline(filename)
+        out = pipeline(filename, website_mode=False)
         if out == 'wrong':
             continue

@@ -17,10 +17,10 @@ def check_opts_input(opts_input, opts_options):
 
 
 def check_opts(opts_array, parameters_array):
-    help_param, vocab_server = parameters_array
+    #help_param = parameters_array
 
     # Help
-    if '-h' in opts_array or '--help' in opts_array or help_param:
+    if '-h' in opts_array or '--help' in opts_array:
         print(c.to_begin,
               c.default_converter_steps,
               c.syntax, c.bottom)
@@ -36,6 +36,7 @@ def check_opts(opts_array, parameters_array):
               'Next steps\nwill be executed:')
         print(c.default_converter_steps)
 
+    '''
     if '-vs' in opts_array or '--vocab_server' in opts_array or vocab_server:
         no_move = True
         print('Warning: You selected --vocab_server mode.')
@@ -51,12 +52,13 @@ def check_opts(opts_array, parameters_array):
                      'run the converter again with parameters -vs or --vocab_server\n\n'
                      + c.bottom)
         vocab_server=True
-
     return vocab_server
+    '''
 
 
 def check_directories(input_dir):
     input_files = os.listdir(input_dir)
+    print(input_files)
     if not any(os.scandir(input_dir)) \
             or (len(input_files) == 1 and input_files[0].endswith('.DS_Store')):
 

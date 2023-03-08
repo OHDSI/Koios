@@ -9,16 +9,17 @@ from app.constants import hgvsg_folder, temp_folder, hgvsg_folder_path, project_
 from flask import session
 
 
-def parse_clingen(hgvsg_df, current_filename, vcf_mode=False, mult_build_mode=False):
+def parse_clingen(hgvsg_df, current_filename, website_mode, vcf_mode=False, mult_build_mode=False):
     hgvsg_df = hgvsg_df.reset_index()
     file_length = len(hgvsg_df['HGVSg'])
 
     http = urllib3.PoolManager()
     url = 'http://reg.test.genome.network/allele?hgvs='
 
-    #parsed_file_name = hgvsg_folder_path + current_filename + '_clingen.csv'
-    parsed_file_name = hgvsg_folder_path + 'outputClingen_' + session["RNDUSERSTR"] + '.csv'
-
+    if website_mode == True:
+        parsed_file_name = hgvsg_folder_path + 'outputClingen_' + session["RNDUSERSTR"] + '.csv'
+    else:
+        parsed_file_name = hgvsg_folder_path + current_filename + '_clingen.csv'
 
     with open(parsed_file_name, 'w', encoding='utf-8') as csvfile:
         #fieldnames = ['HGVSg_vcf', 'link', 'communityStandardTitle', 'allele_class', 'type',
