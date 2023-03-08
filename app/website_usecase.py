@@ -7,7 +7,7 @@ import pandas as pd
 from app.check_input import check_opts_input, check_opts, check_directories,  count_vcf_files, count_txt_files, count_csv_files, count_xml_files
 import app.constants as c
 from app.check_modules import check_module
-from app.vcf_extraction import pipeline, pipeline_xml, pipeline_vocab, check_hgvs_pattern, check_chr_pattern, pipeline_txt
+from app.vcf_extraction import pipeline, pipeline_xml, check_hgvs_pattern, check_chr_pattern, pipeline_txt
 from app.clingen_parser import parse_clingen
 from app.OMOP_mapping import map_to_omop
 #import app.move_old_files as move
@@ -27,12 +27,12 @@ def run_web(filename):
                     return render_template('index.html', show_download=False, show_upload=False, show_loading=False, show_error=True)
 
         # CONVERTER
-        current_vcf_converted = pipeline(filename)
+        current_vcf_converted = pipeline(filename, website_mode=True,)
         time.sleep(2)
-        parsed_data = parse_clingen(current_vcf_converted, filename, vcf_mode=True)
+        parsed_data = parse_clingen(current_vcf_converted, filename, website_mode=True, vcf_mode=True)
         time.sleep(2)
 
-        matches = map_to_omop(parsed_data, filename, vcf_mode=True)
+        matches = map_to_omop(parsed_data, filename, website_mode=True, vcf_mode=True)
 
 
     if filename.endswith(".xml"):
@@ -47,9 +47,9 @@ def run_web(filename):
         # CONVERTER
         current_vcf_converted = pipeline_xml(filename)
         time.sleep(2)
-        parsed_data = parse_clingen(current_vcf_converted, filename)
+        parsed_data = parse_clingen(current_vcf_converted, filename, website_mode=True)
         time.sleep(2)
-        map_to_omop(parsed_data, filename)
+        map_to_omop(parsed_data, filename, website_mode=True,)
 
 
     if filename.endswith(".txt") or filename.endswith(".csv"):
@@ -69,9 +69,9 @@ def run_web(filename):
 
                 current_hgvs_generated = pipeline_txt(filename, clean_hgvs_list, 'clean')
                 time.sleep(2)
-                parsed_data = parse_clingen(current_hgvs_generated, filename, vcf_mode=True, mult_build_mode=False)
+                parsed_data = parse_clingen(current_hgvs_generated, filename, website_mode=True, vcf_mode=True, mult_build_mode=False)
                 time.sleep(2)
-                map_to_omop(parsed_data,filename, vcf_mode=True)
+                map_to_omop(parsed_data,filename, vcf_mode=True, website_mode=True)
 
             else:
                 chr_hgvs_list = check_chr_pattern(df)
@@ -80,9 +80,9 @@ def run_web(filename):
 
                         current_hgvs_generated = pipeline_txt(filename, chr_hgvs_list, 'chr')
                         time.sleep(2)
-                        parsed_data = parse_clingen(current_hgvs_generated, filename, vcf_mode=True, mult_build_mode=True)
+                        parsed_data = parse_clingen(current_hgvs_generated, filename, website_mode=True, vcf_mode=True, mult_build_mode=True)
                         time.sleep(2)
-                        map_to_omop(parsed_data,filename, vcf_mode=True)
+                        map_to_omop(parsed_data,filename, vcf_mode=True, website_mode=True)
 
                 except:
                     return 0
@@ -94,9 +94,9 @@ def run_web(filename):
                 if len(chr_hgvs_list)!=0:
                     current_hgvs_generated = pipeline_txt(filename, chr_hgvs_list, 'chr')
                     time.sleep(2)
-                    parsed_data = parse_clingen(current_hgvs_generated, filename, vcf_mode=True, mult_build_mode=True)
+                    parsed_data = parse_clingen(current_hgvs_generated, filename, website_mode=True, vcf_mode=True, mult_build_mode=True)
                     time.sleep(2)
-                    map_to_omop(parsed_data,filename, vcf_mode=True)
+                    map_to_omop(parsed_data,filename, vcf_mode=True, website_mode=True)
 
             except:
                 return 0

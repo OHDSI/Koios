@@ -45,7 +45,7 @@ Manual - Run KOIOS
 </h3>
 
 
-III. Put VCF files to /Koios/input/ directory.
+III. Put VCF files to /Koios/app/input/ directory.
 
 	Supported input file formats:
 
@@ -57,25 +57,37 @@ III. Put VCF files to /Koios/input/ directory.
 
 	- .csv file with HGVS
 
-IV. Run main.py file (in terminal or command prompt)
+IV. Run run_package.py file (in terminal or command prompt)
 
 Syntax:
 
 1)    cd ../full_path_to_folder/../Koios/
 
-2)     python3 main.py [-h ][--help ]
+2)     python3 run_package.py [-h ][--help ]
 
-    f.e.   python3 main.py -h
+    f.e.   python3 run_package.py -h
 
-       	python3 main.py --help
+       	python3 run_package.py --help
 
-Options for running main.py:
+Options for running run_package.py:
 
  	Parameter   Default usage       	Description
 
  	------------------------------------------------------------
 
 	--help  -h	False  	Display help message.
+
+IV.I. Alternatively, run run_app.py file (in terminal or command prompt) to open the program as a local web application.
+
+The web application has the same interface as koios.ohdsi.org, but runs locally on your computer.
+
+
+1)    cd ../full_path_to_folder/../Koios/
+
+2)    python3 run_app.py
+
+3)    open http://127.0.0.1:5000 in your browser to access the web app.
+    
 
 <h3> 
 

@@ -4,7 +4,7 @@ import app.constants as c
 import os
 from flask import session
 
-def map_to_omop(parsed_df,current_filename, vcf_mode = False):
+def map_to_omop(parsed_df, current_filename, website_mode, vcf_mode = False):
     print(c.split_line_thin)
     print('\nMapping ClinGen output to OMOP Genomic vocabulary')
     #vocabulary_omop = pd.Dataframe()
@@ -28,7 +28,11 @@ def map_to_omop(parsed_df,current_filename, vcf_mode = False):
 
 
     #user_output_folder = output_folder + session["RNDUSERSTR"] + "/"
-    filename = os.path.join(c.project_dir, c.output_dir) + session["RNDUSERSTR"] + "/" + 'outputOMOP_' + session["RNDUSERSTR"] + '.csv'
+    if website_mode:
+        filename = os.path.join(c.project_dir, c.output_dir) + session["RNDUSERSTR"] + "/" + 'outputOMOP_' + session["RNDUSERSTR"] + '.csv'
+    else:
+        filename = os.path.join(c.project_dir, c.output_dir_local) + "/" + 'outputOMOP_' + current_filename + '.csv'
+
     matched_to_synonyms.to_csv(filename, mode='a', header=not os.path.exists(filename), index=False, float_format='%.0f')
 
     print(c.split_line_thin)
