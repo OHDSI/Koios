@@ -1,0 +1,9 @@
+.Rhistory
+Test VCF/
+.Rproj.user
+./koios_Test.*
+ConceptToConcept.csv
+.Rdata
+Concepts_DF_All.csv
+Alleles_DF_All.csv
+*.RData

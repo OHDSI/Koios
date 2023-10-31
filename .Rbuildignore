@@ -1,0 +1,9 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^Test VCF$
+koios_Test.R
+userScript.R
+Readme.Rmd
+ConceptToConcept.csv
+img/
+inst/extdata/

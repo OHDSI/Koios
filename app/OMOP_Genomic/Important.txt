@@ -1,7 +1,0 @@
-Please put here CONCEPT_SYNONYM.csv table 
-from OMOP Genomic vocabulary f(iltered by 
-vocabulary_id='OMOP Genomic'.)
-
-You can download OMOP Genomic vocabulary
-from  Athena: https://athena.ohdsi.org/
-
