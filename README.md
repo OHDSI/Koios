@@ -22,7 +22,7 @@ within the OMOP Genomic vocabulary.
 KOIOS can presently be installed directly from GitHub:
 
     # install.packages("devtools")
-    devtools::install_github("odyOSG/KOIOS")
+    devtools::install_github("OHDSI/Koios")
 
 ## Usage
 
