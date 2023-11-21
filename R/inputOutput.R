@@ -46,7 +46,7 @@ loadVCF <- function(userVCF){
     outList <- list()
     fileList <- list.files(path = userVCF)
 
-    print(fileList)
+    message(paste("Found ", length(fileList), " files in input directory.", sep=""))
 
     for(file in fileList){
 

@@ -7,3 +7,9 @@ Readme.Rmd
 ConceptToConcept.csv
 img/
 inst/extdata/
+Alleles_DF.csv
+Alleles_DF_All.csv
+Concepts_DF.csv
+Concepts_DF_All.csv
+Res1.RData
+Res2.RData

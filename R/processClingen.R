@@ -17,9 +17,9 @@ processClinGen <- function(vcf.df, ref, generateAll = FALSE, progressBar = TRUE)
 
   vcf.df$URL <- paste("http://reg.test.genome.network/allele?hgvs=",vcf.df$hgvsg,sep="")
 
-  returnDat <- as.data.frame(matrix(ncol = 7))
+  returnDat <- as.data.frame(matrix(ncol = 8))
   colnames(returnDat) <- c("Allele#","variantClinGenURL","hgvsg",
-                           "varType","geneSymbol","chr","ref")
+                           "varType","geneSymbol","chr","ref","communityStandardTitle")
 
   start <- proc.time()[3]
 
@@ -73,6 +73,7 @@ processClinGen <- function(vcf.df, ref, generateAll = FALSE, progressBar = TRUE)
               returnDat[k,]$varType <- tempVCF$TYPE
               returnDat[k,]$chr <- tempVCF$CHROM
               returnDat[k,]$ref <- ref
+              returnDat[k,]$communityStandardTitle <- variant$communityStandardTitle[[1]]
 
               k <- k + 1
 
@@ -83,6 +84,7 @@ processClinGen <- function(vcf.df, ref, generateAll = FALSE, progressBar = TRUE)
               returnDat[k,]$varType <- tempVCF$TYPE
               returnDat[k,]$chr <- tempVCF$CHROM
               returnDat[k,]$ref <- ref
+              returnDat[k,]$communityStandardTitle <- variant$communityStandardTitle[[1]]
 
               k <- k + 1
 
@@ -108,6 +110,7 @@ processClinGen <- function(vcf.df, ref, generateAll = FALSE, progressBar = TRUE)
         returnDat[k,]$varType <- tempVCF$TYPE
         returnDat[k,]$chr <- tempVCF$CHROM
         returnDat[k,]$ref <- ref
+        returnDat[k,]$communityStandardTitle <- variant$communityStandardTitle[[1]]
 
         k <- k ++ 1
 
@@ -119,6 +122,25 @@ processClinGen <- function(vcf.df, ref, generateAll = FALSE, progressBar = TRUE)
 
   if(generateAll == TRUE){
     returnDat <- returnDat[!is.na(returnDat$hgvsg),]
+  }
+
+  if(dim(returnDat[grepl("[p\\.[a-zA-Z]{3}\\d*[a-zA-Z]{3}",returnDat$communityStandardTitle),])[1] > 0){
+
+    returnDat$aminoCode <- NA
+    returnDat$aminoCode_S <- NA
+
+    returnDat[grepl("[p\\.[a-zA-Z]{3}\\d*[a-zA-Z]{3}",returnDat$communityStandardTitle),]$aminoCode <- gsub("\\)","",gsub(".*\\(p\\.","",returnDat[grepl("[p\\.[a-zA-Z]{3}\\d*[a-zA-Z]{3}",returnDat$communityStandardTitle),]$communityStandardTitle))
+
+    returnDat[grepl("[p\\.[a-zA-Z]{3}\\d*[a-zA-Z]{3}",returnDat$communityStandardTitle),]$aminoCode_S <- stringr::str_replace_all(returnDat[grepl("[p\\.[a-zA-Z]{3}\\d*[a-zA-Z]{3}",returnDat$communityStandardTitle),]$aminoCode,
+                                                                                                                                  c(
+                                                                                                                                    "Ala"="A", "Arg"="R", "Asn"="N", "Asp"="D",
+                                                                                                                                    "Cys"="C", "Glu"="E", "Gln"="Q", "Gly"="G",
+                                                                                                                                    "His"="H", "Ile"="I", "Leu"="L", "Lys"="K",
+                                                                                                                                    "Met"="M", "Phe"="F", "Pro"="P", "Ser"="S",
+                                                                                                                                    "Thr"="T", "Trp"="W", "Tyr"="Y", "Val"="V",
+                                                                                                                                    "fs" = "_fs_"
+                                                                                                                                  )
+    )
   }
 
   return(returnDat)
@@ -254,7 +276,7 @@ addConcepts <- function(alleles.df, concepts, returnAll = FALSE) {
   fullDat <- merge(alleles.df,concepts,
                    by.x = "hgvsg",
                    by.y = "concept_code",
-                   all.x = returnAll)[,c(2,8,1,3,4,5,6,7,9,11)]  %>%
+                   all.x = returnAll)[,c(2,11,12,13,8,1,3,4,5,9,10,6,7,14)] %>%
     dplyr::arrange(.data$`Allele#`) %>%
     dplyr::distinct()
 

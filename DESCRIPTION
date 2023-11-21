@@ -15,7 +15,6 @@ Imports:
   httr,
   stringr,
   magrittr,
-  utils,
   tidyr,
   dplyr,
   here

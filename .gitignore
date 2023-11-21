@@ -7,3 +7,5 @@ ConceptToConcept.csv
 Concepts_DF_All.csv
 Alleles_DF_All.csv
 *.RData
+Concepts_DF.csv
+Alleles_DF.csv
