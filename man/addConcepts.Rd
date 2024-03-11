@@ -4,10 +4,10 @@
 \alias{addConcepts}
 \title{Adds concept information to an alleles.df dataframe}
 \usage{
-addConcepts(alleles.df, concepts, returnAll = FALSE)
+addConcepts(vcf.df, concepts, returnAll = FALSE)
 }
 \arguments{
-\item{alleles.df}{An alleles.df dataframe returned by}
+\item{vcf.df}{An alleles.df dataframe returned by}
 
 \item{concepts}{The ATHENA concept set, derived from loadConcepts (or User input)}
 

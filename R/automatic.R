@@ -73,17 +73,16 @@ multiVCFPipeline <- function(vcf, ref, generateAll, concepts){
     refWasAuto <- FALSE
   }
 
-  alleles.df.All <- as.data.frame(matrix(ncol = 8))[-1,]
-  colnames(alleles.df.All) <- c("Allele#", "variantClinGenURL", "hgvsg", "varType", "geneSymbol", "chr",
-                                "ref", "fileName")
-
   concepts.df.All <- as.data.frame(matrix(ncol = 11))[-1,]
   colnames(concepts.df.All) <- c("Allele#", "concept_id", "hgvsg", "variantClinGenURL", "varType", "geneSymbol", "chr",
                                  "ref", "concept_name", "concept_class_id","fileName")
 
+  start <- proc.time()[3]
+
   for(i in c(1:length(vcf))){
 
-    print(i)
+    progress(x = i, max = length(vcf))
+    eta(x = i, max = length(vcf), start)
 
     if(refWasAuto==TRUE){
       ref <- "auto"
@@ -106,18 +105,13 @@ multiVCFPipeline <- function(vcf, ref, generateAll, concepts){
 
     vcf.df <- generateHGVSG(vcf.df = vcf.df, ref.df = ref.df)
 
-    alleles.df <- processClinGen(vcf.df, ref, generateAll = generateAll, progressBar = T)
-    alleles.df$fileName <- tempName
-
-    alleles.df.All <- rbind(alleles.df.All,alleles.df)
-
-    concepts.df <- addConcepts(alleles.df, concepts, returnAll = T)
+    concepts.df <- addConcepts(vcf.df, concepts, returnAll = T)
     concepts.df$fileName <- tempName
 
     concepts.df.All <- rbind(concepts.df.All,concepts.df)
   }
 
-  return(list(alleles.df.All,concepts.df.All))
+  return(concepts.df.All)
 
 }
 

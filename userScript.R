@@ -1,5 +1,5 @@
 library(KOIOS)
-setwd("C:/Users/ldyer/Documents/KOIOS_Symposium/")
+setwd("C:/Users/ldyer/Documents/KOIOS2.0/KOIOS/")
 
 ##### Input #####
 
@@ -7,10 +7,10 @@ setwd("C:/Users/ldyer/Documents/KOIOS_Symposium/")
 concepts <- loadConcepts()
 
 #Load the VCF file
-vcf <- loadVCF(userVCF = "Something.VCF")
+vcf <- loadVCF(userVCF = "../KOIOS_testing/VCF/")
 
 #Set the reference genome to "auto"
-ref <- "auto"
+ref <- "hg19"
 
 #Toggle return all transcript alleles (as well as genomic alleles)
 generateTranscripts <- "TRUE"
@@ -26,13 +26,7 @@ vcf.df <- processVCF(vcf)
 
 vcf.df <- generateHGVSG(vcf = vcf.df, ref = ref.df)
 
-alleles.df <- processClinGen(vcf.df,ref,generateAll = generateTranscripts, progressBar = T)
-
-concepts.df <- addConcepts(alleles.df, concepts, returnAll = T)
-
-concepts.df.filt <- concepts.df[!is.na(concepts.df$concept_name),]
-
-
+concepts.df <- addConcepts(vcf.df, concepts, returnAll = T)
 
 ##### Run - Multiple VCFs #####
 
@@ -42,10 +36,7 @@ vcf <- loadVCF(userVCF = "SomeDirectory/")
 #Set ref to hg19
 ref <- "hg19"
 
-output <- multiVCFPipeline(vcf, ref, generateTranscripts, concepts)
-
-alleles.df <- output[[1]]
-concepts.df <- output[[2]]
+concepts.df <- multiVCFPipeline(vcf, ref, generateTranscripts, concepts)
 
 concepts.df.filt <- concepts.df[!is.na(concepts.df$concept_id),]
 

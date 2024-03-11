@@ -264,21 +264,22 @@ conceptToConcept <- function(concepts, progressBar = TRUE, generateAll = TRUE){
 
 
 #' Adds concept information to an alleles.df dataframe
-#' @param alleles.df An alleles.df dataframe returned by
+#' @param vcf.df An alleles.df dataframe returned by
 #' @param concepts The ATHENA concept set, derived from loadConcepts (or User input)
 #' @param returnAll A paramatere indicating whether or not to return results
 #' not in the OMOP Genomic vocab
 #' @return A dataframe containing only alleles found in the OMOP Genomic vocab
 #' and their associated data
 #' @export
-addConcepts <- function(alleles.df, concepts, returnAll = FALSE) {
+addConcepts <- function(vcf.df, concepts, returnAll = FALSE) {
 
-  fullDat <- merge(alleles.df,concepts,
+  fullDat <- merge(vcf.df,concepts,
                    by.x = "hgvsg",
-                   by.y = "concept_code",
-                   all.x = returnAll)[,c(2,11,12,13,8,1,3,4,5,9,10,6,7,14)] %>%
-    dplyr::arrange(.data$`Allele#`) %>%
+                   by.y = "concept_synonym_name",
+                   all.x = TRUE) %>%
     dplyr::distinct()
+
+  fullDat <- fullDat[,c(9,10,1,2:8)]
 
   return(fullDat)
 
