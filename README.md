@@ -87,7 +87,7 @@ files, it is not recommended due to the long runtime.
 It is also possible to run KOIOS on VCF-like data formats, with examples
 detailed below. An appropriate reference is required, as with VCF data.
 
-\#cBioPortal mutations data
+# cBioPortal mutations data
 
     mutations <- read.csv("data_mutations.txt", sep = "\t")
 
@@ -97,7 +97,7 @@ detailed below. An appropriate reference is required, as with VCF data.
     mut_vcf <- processClinGen(mut_vcf, ref = ref, progressBar = F)
     mut_vcf <- addConcepts(mut_vcf,concepts)
 
-\#HGVSG
+# HGVSG
 
 HGVSg data can be directly read into KOIOS and submitted via the
 processClinGen function. A minimal HGVSg dataframe input requires a
@@ -107,7 +107,7 @@ column named “hgvsg”.
     hgvsg <- read.csv("hgvsg.csv", sep = "\t")
     hgvsg <- processClingen(hgvsg,ref=ref)
 
-\#HGVSc and transcript/protein data
+# HGVSc and transcript/protein data
 
 Data already formatted into transcript (HGVSc) or protein (HGVSp)
 formats may also be submitted to KOIOS.
