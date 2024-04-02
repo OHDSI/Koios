@@ -2,7 +2,7 @@
 % Please edit documentation in R/inputOutput.R
 \name{loadConcepts}
 \alias{loadConcepts}
-\title{Generate a set of processed alignments given a stringDF dataframe}
+\title{Load a set of genomic KOIOS concepts}
 \usage{
 loadConcepts()
 }
@@ -10,5 +10,5 @@ loadConcepts()
 A set of concept synonyms for the OMOP Genomic dataset, derived from ATHENA
 }
 \description{
-Generate a set of processed alignments given a stringDF dataframe
+Load a set of genomic KOIOS concepts
 }

@@ -50,8 +50,10 @@ Users may simply run KOIOS according to the following simple pipeline:
     vcf.df <- processVCF(vcf)
     vcf.df <- generateHGVSG(vcf = vcf.df, ref = ref.df)
 
+    vcf.df <- processClinGen(vcf.df, ref = ref, progressBar = F)
+
     #Combine this output data with the OMOP Genomic vocab to produce a DF containing a list of concept codes
-    concepts.df <- addConcepts(vcf.df, concepts)
+    vcf.df <- addConcepts(vcf.df, concepts, returnAll = T)
 
 If the user is unaware of the reference genome used to generate a given
 VCF file they may run the following command, which checks their VCF
@@ -77,10 +79,52 @@ simultaneously within a single command:
 
     concepts.df <- multiVCFPipeline(vcf, ref, generateTranscripts, concepts)
 
-    concepts.df.filt <- concepts.df[!is.na(concepts.df$concept_id),]
-
 While it is possible to use the automatic reference finder for multiple
 files, it is not recommended due to the long runtime.
+
+### Other Data Formats
+
+It is also possible to run KOIOS on VCF-like data formats, with examples
+detailed below. An appropriate reference is required, as with VCF data.
+
+\#cBioPortal mutations data
+
+    mutations <- read.csv("data_mutations.txt", sep = "\t")
+
+    #reference information is likely stored in mutations$NCBI_Build
+
+    mut_vcf <- processcBioPortal(mutations)
+    mut_vcf <- processClinGen(mut_vcf, ref = ref, progressBar = F)
+    mut_vcf <- addConcepts(mut_vcf,concepts)
+
+\#HGVSG
+
+HGVSg data can be directly read into KOIOS and submitted via the
+processClinGen function. A minimal HGVSg dataframe input requires a
+column named “hgvsg”.
+
+
+    hgvsg <- read.csv("hgvsg.csv", sep = "\t")
+    hgvsg <- processClingen(hgvsg,ref=ref)
+
+\#HGVSc and transcript/protein data
+
+Data already formatted into transcript (HGVSc) or protein (HGVSp)
+formats may also be submitted to KOIOS.
+
+These data are simply matched directly with the extended concepts
+object, derived from the OMOP Genomic vocabulary.
+
+
+    transcript_data <- read.csv("data_transcripts.txt", sep = "\t")
+    transcript_merge <- merge(mut_transcripts,concepts_ext,by.x="hgvsc",by.y="concept_synonym_name)
+
+    #The following is an optional step to remove version information from input transcript HGVSc. 
+    #This allows for a wide range of older data to be submitted to the vocabulary, but has a small chance of generating false positive matches.
+
+    #transcript_data$match_hgvs <- gsub(".[0-9]*:",":",mut_transcripts$HGVSc)
+    #concepts_ext$match_hgvs <- gsub(".[0-9]*:",":",concepts_ext$concept_synonym_name)
+    #transcript_merge <- merge(mut_transcripts,concepts_ext,by="match_hgvs")
 
 ## Getting help
 

@@ -27,9 +27,9 @@ findReference <- function(vcf){
   vcf.hg19 <- generateHGVSG(vcf.df = vcf.snv, ref.df = ref.hg19)
   vcf.hg38 <- generateHGVSG(vcf.df = vcf.snv, ref.df = ref.hg38)
 
-  alleles.hg18 <- processClinGen(vcf.df = vcf.hg18, ref = "hg18", generateAll = F, progressBar = F)
-  alleles.hg19 <- processClinGen(vcf.df = vcf.hg19, ref = "hg19", generateAll = F, progressBar = F)
-  alleles.hg38 <- processClinGen(vcf.df = vcf.hg38, ref = "hg38", generateAll = F, progressBar = F)
+  alleles.hg18 <- processClinGen(vcf.df = vcf.hg18, ref = "hg18", progressBar = F)
+  alleles.hg19 <- processClinGen(vcf.df = vcf.hg19, ref = "hg19", progressBar = F)
+  alleles.hg38 <- processClinGen(vcf.df = vcf.hg38, ref = "hg38", progressBar = F)
 
   alleles.hg18 <- alleles.hg18[!is.na(alleles.hg18$hgvsg),]
   alleles.hg19 <- alleles.hg19[!is.na(alleles.hg19$hgvsg),]
@@ -102,8 +102,8 @@ multiVCFPipeline <- function(vcf, ref, generateAll, concepts){
     }
 
     vcf.df <- processVCF(tempVCF)
-
     vcf.df <- generateHGVSG(vcf.df = vcf.df, ref.df = ref.df)
+    vcf.df <- processClinGen(vcf.df, ref = ref, progressBar = F)
 
     concepts.df <- addConcepts(vcf.df, concepts, returnAll = T)
     concepts.df$fileName <- tempName

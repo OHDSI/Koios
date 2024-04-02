@@ -4,89 +4,49 @@
 #'                Must be one of: hg18
 #'                                hg19
 #'                                hg38
-#' @param generateAll A toggle indicating whether all transcript alleles, as well as
-#' all genomic alleles, should be returned
 #' @param progressBar A toggle indicating whether or not a progress bar will be displayed
 #' @return A dataframe containing data derived from the relevant ClinGen URL
 #' for each allele found corresponding to a vcf row
 #' @export
-processClinGen <- function(vcf.df, ref, generateAll = FALSE, progressBar = TRUE){
+processClinGen <- function(vcf.df, ref, progressBar = TRUE){
 
-  #Create a handle
   thisHandle <- httr::handle("http://reg.test.genome.network/")
-
   vcf.df$URL <- paste("http://reg.test.genome.network/allele?hgvs=",vcf.df$hgvsg,sep="")
+  vcf.df$koios_hgvsg <- ""
 
-  returnDat <- as.data.frame(matrix(ncol = 8))
-  colnames(returnDat) <- c("Allele#","variantClinGenURL","hgvsg",
-                           "varType","geneSymbol","chr","ref","communityStandardTitle")
+  clinRef <- ifelse(ref=="hg38","GRCh38",
+                    ifelse(ref=="hg19","GRCh37","NCBI36"))
 
   start <- proc.time()[3]
 
-  k <- 1
-
   for(i in c(1:length(vcf.df$URL))) {
-
-    skip_to_next <- FALSE
-
-    tempVCF <- vcf.df[i,]
-
-    urlTest <- httr::GET(handle = thisHandle,
-                         path = gsub(thisHandle$url,"",tempVCF$URL),
-                         encoding = "UTF-8", as = "text")
-
-    variant <- RcppSimdJson::fparse(urlTest$content)
 
     if(progressBar == TRUE){
       progress(x = i, max = length(vcf.df$URL))
       eta(x = i, max = length(vcf.df$URL), start)
     }
 
-    genes <- c()
+    if(vcf.df[i,]$TYPE == "SNP"){
 
-    if(!is.null(variant$transcriptAlleles)){
+      vcf.df[i,]$koios_hgvsg <- vcf.df[i,]$hgvsg
 
-      for(l in c(1:dim(variant$transcriptAlleles)[1])){
+    } else {
 
-        genes <- c(genes,
-                   variant$transcriptAlleles$geneSymbol[l])
+      urlTest <- httr::GET(handle = thisHandle,
+                           path = gsub(thisHandle$url,"",vcf.df[i,]$URL),
+                           encoding = "UTF-8", as = "text")
 
-      }
+      variant <- RcppSimdJson::fparse(urlTest$content)
 
-    }
+      if(!is.null(variant$genomicAlleles)){
 
-    genes <- paste(na.omit(unique(genes)),collapse = ", ")
+        for(j in c(1:dim(variant$genomicAlleles)[1])){
 
-    if(!is.null(variant$transcriptAlleles)){
+          if(!is.na(variant$genomicAlleles$referenceGenome[[j]])) {
 
-      for(l in c(1:dim(variant$transcriptAlleles)[1])){
+            if(variant$genomicAlleles$referenceGenome[[j]] == clinRef){
 
-        if(generateAll == TRUE){
-          if("MANE" %in% colnames(variant$transcriptAlleles)){
-
-            if(!is.na(variant$transcriptAlleles$MANE[[l]][[1]])){
-
-              returnDat[k,]$`Allele#` <- i
-              returnDat[k,]$variantClinGenURL <- tempVCF$URL
-              returnDat[k,]$hgvsg <- variant$transcriptAlleles$MANE[[l]]$nucleotide$RefSeq$hgvs
-              returnDat[k,]$geneSymbol <- paste(unique(genes),collapse=", ")
-              returnDat[k,]$varType <- tempVCF$TYPE
-              returnDat[k,]$chr <- tempVCF$CHROM
-              returnDat[k,]$ref <- ref
-              returnDat[k,]$communityStandardTitle <- variant$communityStandardTitle[[1]]
-
-              k <- k + 1
-
-              returnDat[k,]$`Allele#` <- i
-              returnDat[k,]$variantClinGenURL <- tempVCF$URL
-              returnDat[k,]$hgvsg <- variant$transcriptAlleles$MANE[[l]]$protein$RefSeq$hgvs
-              returnDat[k,]$geneSymbol <- paste(unique(genes),collapse=", ")
-              returnDat[k,]$varType <- tempVCF$TYPE
-              returnDat[k,]$chr <- tempVCF$CHROM
-              returnDat[k,]$ref <- ref
-              returnDat[k,]$communityStandardTitle <- variant$communityStandardTitle[[1]]
-
-              k <- k + 1
+              vcf.df[i,]$koios_hgvsg <- variant$genomicAlleles$hgvs[[j]][[1]]
 
             }
 
@@ -98,52 +58,9 @@ processClinGen <- function(vcf.df, ref, generateAll = FALSE, progressBar = TRUE)
 
     }
 
-
-    if(!is.null(variant$genomicAlleles)){
-
-      for(j in c(1:dim(variant$genomicAlleles)[1])){
-
-        returnDat[k,]$`Allele#` <- i
-        returnDat[k,]$variantClinGenURL <- tempVCF$URL
-        returnDat[k,]$hgvsg <- variant$genomicAlleles$hgvs[[j]][[1]]
-        returnDat[k,]$geneSymbol <- genes
-        returnDat[k,]$varType <- tempVCF$TYPE
-        returnDat[k,]$chr <- tempVCF$CHROM
-        returnDat[k,]$ref <- ref
-        returnDat[k,]$communityStandardTitle <- variant$communityStandardTitle[[1]]
-
-        k <- k ++ 1
-
-      }
-
-    }
-
   }
 
-  if(generateAll == TRUE){
-    returnDat <- returnDat[!is.na(returnDat$hgvsg),]
-  }
-
-  if(dim(returnDat[grepl("[p\\.[a-zA-Z]{3}\\d*[a-zA-Z]{3}",returnDat$communityStandardTitle),])[1] > 0){
-
-    returnDat$aminoCode <- NA
-    returnDat$aminoCode_S <- NA
-
-    returnDat[grepl("[p\\.[a-zA-Z]{3}\\d*[a-zA-Z]{3}",returnDat$communityStandardTitle),]$aminoCode <- gsub("\\)","",gsub(".*\\(p\\.","",returnDat[grepl("[p\\.[a-zA-Z]{3}\\d*[a-zA-Z]{3}",returnDat$communityStandardTitle),]$communityStandardTitle))
-
-    returnDat[grepl("[p\\.[a-zA-Z]{3}\\d*[a-zA-Z]{3}",returnDat$communityStandardTitle),]$aminoCode_S <- stringr::str_replace_all(returnDat[grepl("[p\\.[a-zA-Z]{3}\\d*[a-zA-Z]{3}",returnDat$communityStandardTitle),]$aminoCode,
-                                                                                                                                  c(
-                                                                                                                                    "Ala"="A", "Arg"="R", "Asn"="N", "Asp"="D",
-                                                                                                                                    "Cys"="C", "Glu"="E", "Gln"="Q", "Gly"="G",
-                                                                                                                                    "His"="H", "Ile"="I", "Leu"="L", "Lys"="K",
-                                                                                                                                    "Met"="M", "Phe"="F", "Pro"="P", "Ser"="S",
-                                                                                                                                    "Thr"="T", "Trp"="W", "Tyr"="Y", "Val"="V",
-                                                                                                                                    "fs" = "_fs_"
-                                                                                                                                  )
-    )
-  }
-
-  return(returnDat)
+  return(vcf.df)
 
 }
 
@@ -273,13 +190,11 @@ conceptToConcept <- function(concepts, progressBar = TRUE, generateAll = TRUE){
 #' @export
 addConcepts <- function(vcf.df, concepts, returnAll = FALSE) {
 
-  fullDat <- merge(vcf.df,concepts,
-                   by.x = "hgvsg",
+  fullDat <- merge(vcf.df,concepts[,c(1:3)],
+                   by.x = "koios_hgvsg",
                    by.y = "concept_synonym_name",
                    all.x = TRUE) %>%
     dplyr::distinct()
-
-  fullDat <- fullDat[,c(9,10,1,2:8)]
 
   return(fullDat)
 

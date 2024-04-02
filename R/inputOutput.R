@@ -1,8 +1,15 @@
-#' Generate a set of processed alignments given a stringDF dataframe
+#' Load a set of genomic KOIOS concepts
 #' @return A set of concept synonyms for the OMOP Genomic dataset, derived from ATHENA
 #' @export
 loadConcepts <- function(){
   return(KOIOS::concepts)
+}
+
+#' Load an extended set of protein and transcript KOIOS concepts
+#' @return A set of concept synonyms for the OMOP Genomic dataset, derived from ATHENA
+#' @export
+loadConcepts_extended <- function(){
+  return(KOIOS::concepts_ext)
 }
 
 #' Generate a set of reference maps between chromosome IDs
