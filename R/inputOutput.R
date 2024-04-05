@@ -12,6 +12,13 @@ loadConcepts_extended <- function(){
   return(KOIOS::concepts_ext)
 }
 
+#' Load an extended set of protein and transcript KOIOS concepts
+#' @return A set of concept synonyms for the OMOP Genomic dataset, derived from ATHENA
+#' @export
+loadConcepts_fusions <- function(){
+  return(KOIOS::concepts_fusion)
+}
+
 #' Generate a set of reference maps between chromosome IDs
 #' @param ref The chosen reference genome, hg18/hg19/hg38
 #' @return A map of synonyms between chromosome IDs for a given reference genome

@@ -87,7 +87,7 @@ files, it is not recommended due to the long runtime.
 It is also possible to run KOIOS on VCF-like data formats, with examples
 detailed below. An appropriate reference is required, as with VCF data.
 
-# cBioPortal mutations data
+#### cBioPortal mutations data
 
     mutations <- read.csv("data_mutations.txt", sep = "\t")
 
@@ -97,7 +97,7 @@ detailed below. An appropriate reference is required, as with VCF data.
     mut_vcf <- processClinGen(mut_vcf, ref = ref, progressBar = F)
     mut_vcf <- addConcepts(mut_vcf,concepts)
 
-# HGVSG
+#### HGVSG
 
 HGVSg data can be directly read into KOIOS and submitted via the
 processClinGen function. A minimal HGVSg dataframe input requires a
@@ -107,10 +107,11 @@ column named “hgvsg”.
     hgvsg <- read.csv("hgvsg.csv", sep = "\t")
     hgvsg <- processClingen(hgvsg,ref=ref)
 
-# HGVSc and transcript/protein data
+#### HGVSc and transcript/protein data
 
 Data already formatted into transcript (HGVSc) or protein (HGVSp)
-formats may also be submitted to KOIOS.
+formats, such as with cBioPortal input data (As below), may also be
+submitted to KOIOS.
 
 These data are simply matched directly with the extended concepts
 object, derived from the OMOP Genomic vocabulary.
@@ -125,6 +126,17 @@ object, derived from the OMOP Genomic vocabulary.
     #transcript_data$match_hgvs <- gsub(".[0-9]*:",":",mut_transcripts$HGVSc)
     #concepts_ext$match_hgvs <- gsub(".[0-9]*:",":",concepts_ext$concept_synonym_name)
     #transcript_merge <- merge(mut_transcripts,concepts_ext,by="match_hgvs")
+
+#### Fusions
+
+KOIOS may also be used to match gene fusion data with the relevant
+concept\_ids, such as with cBioPortal gene fusion data (As below).
+
+
+    concepts_fusion <- loadConcepts_fusions()
+
+    fusions_data <- read.csv("data_sv.txt", sep = "\t")
+    fusions_data <- generateFusions_cBioPortal(fusions_data,concepts_fusion)
 
 ## Getting help
 
