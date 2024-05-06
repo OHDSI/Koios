@@ -1,12 +1,11 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <p float="left">
-<img src="./img/koios.png" style="vertical-align: center;" width="100"/><img src="./img/ods_logo.jpg" style="vertical-align: center;" width="100"/>
+<img src="./img/koios.png" style="vertical-align: center;" width="100"/>
 </p>
 
 ## Overview
 
-KOIOS is a tool developed by [Odysseus Data Services
-Inc](https://odysseusinc.com/) that allows users to combine their
+KOIOS is an open source tool developed and supported by the OHDSI Oncology WG that allows users to combine their
 variant data with the OMOP Genomic Vocabulary in order to generate a set
 of genomic standard concept IDs from raw patient-level genomic data.
 
